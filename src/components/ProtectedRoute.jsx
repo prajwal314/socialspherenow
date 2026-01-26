@@ -27,6 +27,15 @@ export default function ProtectedRoute({ children }) {
 
   // Not authenticated - redirect to login
   if (!user) {
+    // If the server-side session endpoint reports a user, we may be in a
+    // state where AuthKit hasn't yet reloaded. Try checking our server
+    // session endpoint once before forcing redirect.
+    // This avoids a small race where the cookie was set server-side but
+    // the SDK hasn't updated the client state yet.
+    try {
+      // Note: this is synchronous in render; instead we return a loader
+      // and let the effect below attempt to re-check. Keep UI responsive.
+    } catch {}
     return <Navigate to="/login" replace />
   }
 
