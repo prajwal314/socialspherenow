@@ -24,12 +24,32 @@ export default function Callback() {
 
       try {
         // Call our serverless exchange endpoint which sets the session cookie
-        await fetch(`/api/auth/exchange?code=${encodeURIComponent(code)}`, {
+        const ex = await fetch(`/api/auth/exchange?code=${encodeURIComponent(code)}`, {
+          credentials: 'include',
+          redirect: 'follow',
+        })
+
+        // After the exchange, ask our session endpoint if a user exists.
+        const s = await fetch('/api/auth/session', {
           credentials: 'include',
         })
-        // Reload so AuthKit can pick up the server session via its session
-        // fetching behavior (or so our session endpoint is used by the app).
-        window.location.replace('/callback')
+        const data = await s.json()
+
+        if (data?.user) {
+          // If server session exists, navigate to home (or any returnTo in state)
+          const rawState = params.get('state')
+          let returnTo = '/home'
+          if (rawState) {
+            try {
+              const parsed = JSON.parse(rawState)
+              if (parsed.returnTo) returnTo = parsed.returnTo
+            } catch {}
+          }
+          window.location.replace(returnTo)
+        } else {
+          // No server session — fall back to login so AuthKit can try client flow
+          window.location.replace('/login')
+        }
       } catch (e) {
         console.error('Server exchange failed', e)
       }
