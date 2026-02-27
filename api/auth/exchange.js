@@ -14,8 +14,9 @@ export default async function handler(req, res) {
     params.append('grant_type', 'authorization_code');
     params.append('code', code);
     if (process.env.WORKOS_CLIENT_ID) params.append('client_id', process.env.WORKOS_CLIENT_ID);
-    if (process.env.WORKOS_API_KEY) params.append('client_secret', process.env.WORKOS_API_KEY);
-    if (process.env.WORKOS_SECRET) params.append('client_secret', process.env.WORKOS_SECRET);
+    // Use WORKOS_CLIENT_SECRET (preferred) or fallback to WORKOS_API_KEY
+    const clientSecret = process.env.WORKOS_CLIENT_SECRET || process.env.WORKOS_API_KEY;
+    if (clientSecret) params.append('client_secret', clientSecret);
     if (process.env.VITE_WORKOS_REDIRECT_URI) params.append('redirect_uri', process.env.VITE_WORKOS_REDIRECT_URI);
 
     const tokenResp = await fetch(tokenEndpoint, {

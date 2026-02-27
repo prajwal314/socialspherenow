@@ -7,16 +7,45 @@ import { useEffect, useState } from 'react'
 export default function ProtectedRoute({ children }) {
   const { isLoading, user } = useAuth()
   const location = useLocation()
-  const [checkingServerSession, setCheckingServerSession] = useState(false)
+  const [checkingServerSession, setCheckingServerSession] = useState(true)
   const [serverUserId, setServerUserId] = useState(null)
 
+  // Check server session on mount (must be before any conditional returns)
+  useEffect(() => {
+    let mounted = true
+    const checkSession = async () => {
+      // If we already have a client user, skip server check
+      if (user) {
+        setCheckingServerSession(false)
+        return
+      }
+      
+      try {
+        const res = await fetch('/api/auth/session', { credentials: 'include' })
+        const data = await res.json()
+        if (!mounted) return
+        if (data?.user?.id) {
+          setServerUserId(data.user.id)
+        }
+      } catch (e) {
+        console.error('Session check failed:', e)
+      } finally {
+        if (mounted) setCheckingServerSession(false)
+      }
+    }
+
+    checkSession()
+    return () => { mounted = false }
+  }, [user])
+
   // Use the client user id if present, otherwise use server-side user id
+  const effectiveUserId = user?.id || serverUserId
   const convexUser = useQuery(
     api.users.getByWorkosId,
-    user?.id ? { workosId: user.id } : serverUserId ? { workosId: serverUserId } : 'skip'
+    effectiveUserId ? { workosId: effectiveUserId } : 'skip'
   )
 
-  // Show loading while auth is checking
+  // Show loading while auth SDK is initializing
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#161621]">
@@ -28,31 +57,8 @@ export default function ProtectedRoute({ children }) {
     )
   }
 
-  // Not authenticated in client SDK. Check server session once before redirecting.
-  useEffect(() => {
-    let mounted = true
-    const checkSession = async () => {
-      if (user) return
-      setCheckingServerSession(true)
-      try {
-        const res = await fetch('/api/auth/session', { credentials: 'include' })
-        const data = await res.json()
-        if (!mounted) return
-        if (data?.user?.id) {
-          setServerUserId(data.user.id)
-        }
-      } catch (e) {
-        // ignore
-      } finally {
-        if (mounted) setCheckingServerSession(false)
-      }
-    }
-
-    checkSession()
-    return () => { mounted = false }
-  }, [user])
-
-  if (!user && checkingServerSession) {
+  // Show loading while checking server session
+  if (checkingServerSession) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#161621]">
         <div className="text-center">
@@ -63,7 +69,8 @@ export default function ProtectedRoute({ children }) {
     )
   }
 
-  if (!user && !checkingServerSession && !serverUserId) {
+  // No user from either client SDK or server session
+  if (!effectiveUserId) {
     return <Navigate to="/login" replace />
   }
 
