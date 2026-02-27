@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npx convex dev\" \"vite\"",
-    "build": "npx convex deploy && vite build",
+    "build": "vite build",
+    "build:full": "npx convex deploy --yes && vite build",
+    "convex:deploy": "npx convex deploy --yes",
     "lint": "eslint .",
     "preview": "vite preview"
   },
