@@ -13,11 +13,15 @@ export default async function handler(req, res) {
     const params = new URLSearchParams();
     params.append('grant_type', 'authorization_code');
     params.append('code', code);
-    if (process.env.WORKOS_CLIENT_ID) params.append('client_id', process.env.WORKOS_CLIENT_ID);
+    // Server-side env vars don't have VITE_ prefix - check both for flexibility
+    const clientId = process.env.WORKOS_CLIENT_ID || process.env.VITE_WORKOS_CLIENT_ID;
+    if (clientId) params.append('client_id', clientId);
     // Use WORKOS_CLIENT_SECRET (preferred) or fallback to WORKOS_API_KEY
     const clientSecret = process.env.WORKOS_CLIENT_SECRET || process.env.WORKOS_API_KEY;
     if (clientSecret) params.append('client_secret', clientSecret);
-    if (process.env.VITE_WORKOS_REDIRECT_URI) params.append('redirect_uri', process.env.VITE_WORKOS_REDIRECT_URI);
+    // Server-side env vars - check both with and without VITE_ prefix
+    const redirectUri = process.env.WORKOS_REDIRECT_URI || process.env.VITE_WORKOS_REDIRECT_URI;
+    if (redirectUri) params.append('redirect_uri', redirectUri);
 
     const tokenResp = await fetch(tokenEndpoint, {
       method: 'POST',
