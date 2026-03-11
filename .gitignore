@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.next
 dist
 dist-ssr
 *.local
@@ -27,6 +28,7 @@ AGENTS.md
 .env
 .env.local
 .env.*.local
+tsconfig.tsbuildinfo
 
 
 nul 

@@ -1,39 +1,35 @@
 {
-  "name": "socialsphere-web",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "concurrently \"npx convex dev\" \"vite\"",
-    "build": "vite build",
-    "build:full": "npx convex deploy --yes && vite build",
-    "convex:deploy": "npx convex deploy --yes",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
-    "@workos-inc/authkit-react": "^0.16.0",
-    "@workos-inc/node": "^8.8.0",
-    "convex": "^1.31.6",
-    "jsonwebtoken": "^9.0.3",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-router-dom": "^7.12.0",
-    "tailwindcss": "^4.1.18"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@types/react": "^19.2.5",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
-    "autoprefixer": "^10.4.23",
-    "concurrently": "^9.2.1",
-    "eslint": "^9.39.1",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "globals": "^16.5.0",
-    "postcss": "^8.5.6",
-    "vite": "^7.2.4"
-  }
+	"name": "socialsphere-web",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "concurrently \"npx convex dev\" \"next dev --turbopack\"",
+		"build": "next build",
+		"build:full": "npx convex deploy --yes && next build",
+		"convex:deploy": "npx convex deploy --yes",
+		"start": "next start",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write ."
+	},
+	"dependencies": {
+		"@workos-inc/authkit-nextjs": "^2.15.0",
+		"convex": "^1.32.0",
+		"next": "15.5.12",
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0",
+		"tailwindcss": "^4.1.18"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.6",
+		"@tailwindcss/postcss": "^4.1.18",
+		"@types/node": "^22.0.0",
+		"@types/react": "^19.2.5",
+		"@types/react-dom": "^19.2.3",
+		"autoprefixer": "^10.4.23",
+		"concurrently": "^9.2.1",
+		"postcss": "^8.5.6",
+		"typescript": "^5.8.0"
+	}
 }
