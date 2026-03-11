@@ -113,8 +113,26 @@ export default function Profile() {
     }
   }, [currentUser])
 
-  const handleSignOut = () => {
-    signOut()
+  const handleSignOut = async () => {
+    try {
+      // Call server logout to clear cookie and get WorkOS logout URL
+      const res = await fetch('/api/auth/logout', { credentials: 'include' })
+      const data = await res.json()
+      
+      // Also sign out from AuthKit (clears client-side state)
+      signOut()
+      
+      // Redirect to WorkOS logout URL or home
+      if (data.redirectTo && data.redirectTo !== '/') {
+        window.location.href = data.redirectTo
+      } else {
+        navigate('/login')
+      }
+    } catch (e) {
+      console.error('Logout failed:', e)
+      signOut()
+      navigate('/login')
+    }
   }
 
   const handleSaveProfile = async () => {

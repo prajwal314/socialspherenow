@@ -8,13 +8,14 @@ export default function ProtectedRoute({ children }) {
   const { isLoading, user } = useAuth()
   const location = useLocation()
   const [checkingServerSession, setCheckingServerSession] = useState(true)
-  const [serverUserId, setServerUserId] = useState(null)
+  const [serverUser, setServerUser] = useState(null)
 
-  // Check server session on mount (must be before any conditional returns)
+  // Check server session on mount
   useEffect(() => {
     let mounted = true
+    
     const checkSession = async () => {
-      // If we already have a client user, skip server check
+      // If we already have a client user (devMode), skip server check
       if (user) {
         setCheckingServerSession(false)
         return
@@ -23,9 +24,11 @@ export default function ProtectedRoute({ children }) {
       try {
         const res = await fetch('/api/auth/session', { credentials: 'include' })
         const data = await res.json()
+        
         if (!mounted) return
-        if (data?.user?.id) {
-          setServerUserId(data.user.id)
+        
+        if (data?.user) {
+          setServerUser(data.user)
         }
       } catch (e) {
         console.error('Session check failed:', e)
@@ -38,8 +41,10 @@ export default function ProtectedRoute({ children }) {
     return () => { mounted = false }
   }, [user])
 
-  // Use the client user id if present, otherwise use server-side user id
-  const effectiveUserId = user?.id || serverUserId
+  // Use the client user (devMode) or server user (production)
+  const effectiveUser = user || serverUser
+  const effectiveUserId = effectiveUser?.id
+
   const convexUser = useQuery(
     api.users.getByWorkosId,
     effectiveUserId ? { workosId: effectiveUserId } : 'skip'

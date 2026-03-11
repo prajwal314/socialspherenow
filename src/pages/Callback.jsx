@@ -6,123 +6,86 @@ import { api } from '../../convex/_generated/api'
 
 export default function Callback() {
   const navigate = useNavigate()
-  const { isLoading, user } = useAuth()
+  const { isLoading: authKitLoading, user: authKitUser } = useAuth()
   const upsertUser = useMutation(api.users.upsertUser)
   const hasUpserted = useRef(false)
-  const hasStartedExchange = useRef(false)
-  const [serverUserId, setServerUserId] = useState(null)
-  const [exchangeComplete, setExchangeComplete] = useState(false)
-  const [exchangeError, setExchangeError] = useState(null)
+  const [serverUser, setServerUser] = useState(null)
+  const [checkingSession, setCheckingSession] = useState(true)
 
-  // Step 1: Exchange authorization code for session cookie (production flow)
+  // Check server session (for production flow)
   useEffect(() => {
-    const tryServerExchange = async () => {
-      // Prevent duplicate exchange attempts
-      if (hasStartedExchange.current) return
-      
-      const params = new URLSearchParams(window.location.search)
-      const code = params.get('code')
-      
-      // No code means we're not in OAuth callback flow
-      if (!code) {
-        setExchangeComplete(true)
+    const checkSession = async () => {
+      // Skip if we have authKit user (devMode)
+      if (authKitUser) {
+        setCheckingSession(false)
         return
       }
 
-      hasStartedExchange.current = true
-
       try {
-        // Call our serverless exchange endpoint which sets the session cookie
-        const exchangeRes = await fetch(`/api/auth/exchange?code=${encodeURIComponent(code)}`, {
-          credentials: 'include',
-        })
-
-        if (!exchangeRes.ok) {
-          const errorData = await exchangeRes.json().catch(() => ({}))
-          console.error('Exchange failed:', errorData)
-          setExchangeError(errorData.error || 'exchange_failed')
-          setExchangeComplete(true)
-          return
-        }
-
-        // After the exchange, verify the session was created
-        const sessionRes = await fetch('/api/auth/session', {
-          credentials: 'include',
-        })
-        const sessionData = await sessionRes.json()
-
-        if (sessionData?.user?.id) {
-          setServerUserId(sessionData.user.id)
-        }
+        const res = await fetch('/api/auth/session', { credentials: 'include' })
+        const data = await res.json()
         
-        setExchangeComplete(true)
+        if (data?.user) {
+          setServerUser(data.user)
+        }
       } catch (e) {
-        console.error('Server exchange failed', e)
-        setExchangeError('network_error')
-        setExchangeComplete(true)
+        console.error('Session check failed:', e)
+      } finally {
+        setCheckingSession(false)
       }
     }
 
-    tryServerExchange()
-  }, [])
+    // Only check after authKit finishes loading
+    if (!authKitLoading) {
+      checkSession()
+    }
+  }, [authKitLoading, authKitUser])
 
-  // Determine effective user ID (client-side AuthKit OR server session)
-  const effectiveUserId = user?.id || serverUserId
+  // Use authKit user (devMode) or server user (production)
+  const effectiveUser = authKitUser || serverUser
+  const effectiveUserId = effectiveUser?.id
 
-  // Query Convex user only when we have an effective user ID
+  // Query Convex user
   const convexUser = useQuery(
     api.users.getByWorkosId,
     effectiveUserId ? { workosId: effectiveUserId } : 'skip'
   )
 
-  // Step 2: Upsert user to Convex database
+  // Save user to Convex
   useEffect(() => {
     const saveUser = async () => {
-      if (hasUpserted.current) return
+      if (hasUpserted.current || !effectiveUser) return
       
-      // For client-side user (AuthKit devMode)
-      if (user) {
-        hasUpserted.current = true
-        try {
-          await upsertUser({
-            workosId: user.id,
-            email: user.email,
-            firstName: user.firstName ?? undefined,
-            lastName: user.lastName ?? undefined,
-            profileImageUrl: user.profilePictureUrl ?? undefined,
-          })
-        } catch (error) {
-          console.error('Failed to save user to Convex:', error)
-        }
+      hasUpserted.current = true
+      
+      try {
+        await upsertUser({
+          workosId: effectiveUser.id,
+          email: effectiveUser.email,
+          firstName: effectiveUser.firstName ?? undefined,
+          lastName: effectiveUser.lastName ?? undefined,
+          profileImageUrl: effectiveUser.profilePictureUrl ?? undefined,
+        })
+      } catch (error) {
+        console.error('Failed to save user:', error)
       }
-      // For server-side session, we may not have full user details
-      // The user should already exist from a previous upsert during login
     }
 
     saveUser()
-  }, [user, upsertUser])
+  }, [effectiveUser, upsertUser])
 
-  // Step 3: Navigate after everything is ready
+  // Navigate after everything is ready
   useEffect(() => {
-    // Wait for exchange to complete
-    if (!exchangeComplete) return
-    
-    // Wait for AuthKit to finish loading
-    if (isLoading) return
+    // Wait for authKit and session check
+    if (authKitLoading || checkingSession) return
 
-    // If exchange failed, redirect to login with error
-    if (exchangeError) {
-      navigate(`/login?error=${exchangeError}`, { replace: true })
-      return
-    }
-
-    // No user from either source - redirect to login
+    // No user found
     if (!effectiveUserId) {
       navigate('/login', { replace: true })
       return
     }
 
-    // Wait for Convex user query to load
+    // Wait for Convex query
     if (convexUser === undefined) return
 
     // Redirect based on onboarding status
@@ -131,15 +94,13 @@ export default function Callback() {
     } else {
       navigate('/preferences', { replace: true })
     }
-  }, [exchangeComplete, exchangeError, isLoading, effectiveUserId, convexUser, navigate])
+  }, [authKitLoading, checkingSession, effectiveUserId, convexUser, navigate])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#161621]">
       <div className="text-center">
         <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-white text-lg">
-          {exchangeError ? 'Redirecting...' : 'Authenticating...'}
-        </p>
+        <p className="text-white text-lg">Authenticating...</p>
       </div>
     </div>
   )
