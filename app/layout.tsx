@@ -14,8 +14,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en">
-			<body className="bg-[#161621] text-white antialiased">
+		<html lang="en" suppressHydrationWarning>
+			<body
+				className="bg-[#161621] text-white antialiased"
+				suppressHydrationWarning
+			>
 				<ConvexClientProvider>{children}</ConvexClientProvider>
 			</body>
 		</html>

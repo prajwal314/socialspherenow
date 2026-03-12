@@ -1,25 +1,47 @@
 "use client";
 
-import { useMutation } from "convex/react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { useConvexAuth, useMutation } from "convex/react";
+import { type ReactNode, useEffect, useState } from "react";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@/lib/auth-context";
 
+type SyncStatus = "idle" | "syncing" | "synced" | "error";
+
 export function AuthBootstrap({ children }: { children: ReactNode }) {
-	const { user, isLoading } = useAuth();
+	const { user, isLoading: isAuthLoading } = useAuth();
+	const { isAuthenticated: isConvexAuthenticated, isLoading: isConvexLoading } =
+		useConvexAuth();
 	const upsertUser = useMutation(api.users.upsertUser);
-	const syncedUserIdRef = useRef<string | null>(null);
-	const [isSyncing, setIsSyncing] = useState(false);
+	const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
+	const [syncedUserId, setSyncedUserId] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (!user?.id || syncedUserIdRef.current === user.id || isSyncing) {
+		// Reset sync status when user logs out
+		if (!user) {
+			setSyncStatus("idle");
+			setSyncedUserId(null);
+			return;
+		}
+
+		// Wait for Convex to be authenticated before syncing
+		if (!isConvexAuthenticated || isConvexLoading) {
+			return;
+		}
+
+		// Already synced this user
+		if (syncedUserId === user.id) {
+			return;
+		}
+
+		// Already syncing
+		if (syncStatus === "syncing") {
 			return;
 		}
 
 		let cancelled = false;
 
 		const syncUser = async () => {
-			setIsSyncing(true);
+			setSyncStatus("syncing");
 
 			try {
 				await upsertUser({
@@ -31,13 +53,16 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
 				});
 
 				if (!cancelled) {
-					syncedUserIdRef.current = user.id;
+					setSyncedUserId(user.id);
+					setSyncStatus("synced");
 				}
 			} catch (error) {
 				console.error("Failed to sync authenticated user:", error);
-			} finally {
 				if (!cancelled) {
-					setIsSyncing(false);
+					// On error, still allow user through but log the issue
+					// This prevents infinite loading if Convex auth is misconfigured
+					setSyncStatus("error");
+					setSyncedUserId(user.id); // Mark as "synced" to unblock UI
 				}
 			}
 		};
@@ -47,9 +72,28 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
 		return () => {
 			cancelled = true;
 		};
-	}, [isSyncing, upsertUser, user]);
+	}, [
+		user,
+		syncedUserId,
+		syncStatus,
+		upsertUser,
+		isConvexAuthenticated,
+		isConvexLoading,
+	]);
 
-	if (isLoading || (user && syncedUserIdRef.current !== user.id && isSyncing)) {
+	// Show loading during:
+	// 1. Initial WorkOS auth check
+	// 2. Convex auth loading (getting token)
+	// 3. First-time user sync (only if not already synced)
+	const shouldShowLoading =
+		isAuthLoading ||
+		isConvexLoading ||
+		(user &&
+			isConvexAuthenticated &&
+			syncStatus === "syncing" &&
+			!syncedUserId);
+
+	if (shouldShowLoading) {
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-[#161621]">
 				<div className="text-center">

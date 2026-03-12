@@ -6,7 +6,7 @@ if (!clientId) {
 	);
 }
 
-const authConfig = {
+export default {
 	providers: [
 		{
 			type: "customJwt",
@@ -24,5 +24,3 @@ const authConfig = {
 		},
 	],
 };
-
-export default authConfig;
