@@ -174,7 +174,7 @@ export default function Profile() {
 	}, [currentUser]);
 
 	const handleSignOut = (): void => {
-		window.location.href = "/auth/signout";
+		window.location.href = "/api/auth/signout";
 	};
 
 	const handleSaveProfile = async (): Promise<void> => {
