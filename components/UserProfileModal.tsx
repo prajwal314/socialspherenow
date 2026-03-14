@@ -106,12 +106,12 @@ export default function UserProfileModal({
 			<button
 				type="button"
 				aria-label="Close user profile modal"
-				className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+				className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm touch-manipulation"
 				onClick={onClose}
 			/>
-			<div className="fixed inset-0 z-[51] overflow-y-auto">
+			<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
 				<div className="min-h-full flex items-center justify-center p-4 py-8">
-					<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl">
+					<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 						{profile === undefined ? (
 							<div className="p-12 flex items-center justify-center">
 								<div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />

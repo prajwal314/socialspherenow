@@ -365,6 +365,119 @@ export const leaveEvent = mutation({
 	},
 });
 
+// Get events created by user with details (for profile page)
+export const getUserEventsWithDetails = query({
+	args: { userId: v.string() },
+	handler: async (ctx, args) => {
+		const events = await ctx.db
+			.query("events")
+			.withIndex("by_creator", (q) => q.eq("creatorId", args.userId))
+			.order("desc")
+			.collect();
+
+		// Add image URLs and attendee info for each event
+		const eventsWithDetails = await Promise.all(
+			events.map(async (event) => {
+				let imageUrl = null;
+				if (event.imageId) {
+					imageUrl = await ctx.storage.getUrl(event.imageId);
+				}
+
+				// Get attendee count
+				const attendees = await ctx.db
+					.query("eventAttendees")
+					.withIndex("by_event", (q) => q.eq("eventId", event._id))
+					.collect();
+
+				const goingCount = attendees.filter((a) => a.status === "going").length;
+				const spotsLeft = event.peopleNeeded
+					? event.peopleNeeded - goingCount
+					: null;
+
+				return {
+					...event,
+					imageUrl,
+					goingCount,
+					spotsLeft,
+					attendeeCount: attendees.length,
+				};
+			}),
+		);
+
+		return eventsWithDetails;
+	},
+});
+
+// Delete an event (only creator can delete)
+export const deleteEvent = mutation({
+	args: {
+		eventId: v.id("events"),
+		userId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const event = await ctx.db.get(args.eventId);
+		if (!event) {
+			return { success: false, message: "Event not found" };
+		}
+
+		// Check if user is the creator
+		if (event.creatorId !== args.userId) {
+			return { success: false, message: "Only the creator can delete this event" };
+		}
+
+		// Delete associated event attendees
+		const attendees = await ctx.db
+			.query("eventAttendees")
+			.withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+			.collect();
+
+		for (const attendee of attendees) {
+			await ctx.db.delete(attendee._id);
+		}
+
+		// If event has a group chat, delete it and its messages
+		const eventChat = await ctx.db
+			.query("chats")
+			.withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+			.first();
+
+		if (eventChat) {
+			// Delete chat members
+			const chatMembers = await ctx.db
+				.query("chatMembers")
+				.withIndex("by_chat", (q) => q.eq("chatId", eventChat._id))
+				.collect();
+
+			for (const member of chatMembers) {
+				await ctx.db.delete(member._id);
+			}
+
+			// Delete messages
+			const messages = await ctx.db
+				.query("messages")
+				.withIndex("by_chat", (q) => q.eq("chatId", eventChat._id))
+				.collect();
+
+			for (const message of messages) {
+				await ctx.db.delete(message._id);
+			}
+
+			// Delete the chat
+			await ctx.db.delete(eventChat._id);
+		}
+
+		// Delete the event image from storage if exists
+		if (event.imageId) {
+			await ctx.storage.delete(event.imageId);
+		}
+
+		// Delete the event
+		await ctx.db.delete(args.eventId);
+
+		return { success: true, message: "Event deleted successfully" };
+	},
+});
+
 // Get event with attendees and creator info
 export const getEventWithDetails = query({
 	args: { eventId: v.id("events") },

@@ -102,7 +102,23 @@ interface UserStats {
 }
 
 // View state type
-type ActiveView = "main" | "editProfile" | "editPreferences";
+type ActiveView = "main" | "editProfile" | "editPreferences" | "myEvents";
+
+// Event interface
+interface UserEvent {
+	_id: Id<"events">;
+	title: string;
+	activity: string;
+	description?: string;
+	dateTime: number;
+	isLive: boolean;
+	imageUrl?: string | null;
+	goingCount: number;
+	spotsLeft: number | null;
+	attendeeCount: number;
+	peopleNeeded?: number;
+	createdAt: number;
+}
 
 export default function Profile() {
 	const { user } = useAuth();
@@ -114,6 +130,9 @@ export default function Profile() {
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [showSuccess, setShowSuccess] = useState<boolean>(false);
 	const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
+	const [eventToDelete, setEventToDelete] = useState<Id<"events"> | null>(null);
+	const [isDeleting, setIsDeleting] = useState<boolean>(false);
+	const [imageUploadError, setImageUploadError] = useState<string | null>(null);
 
 	// Edit profile form
 	const [profileForm, setProfileForm] = useState<ProfileForm>({
@@ -141,12 +160,18 @@ export default function Profile() {
 		user?.id ? { workosId: user.id } : "skip",
 	) as UserStats | undefined | null;
 
+	const userEvents = useQuery(
+		api.events.getUserEventsWithDetails,
+		user?.id ? { userId: user.id } : "skip",
+	) as UserEvent[] | undefined | null;
+
 	// Mutations
 	const updateProfile = useMutation(api.users.updateProfile);
 	const updatePreferences = useMutation(api.users.updatePreferences);
 	const generateUploadUrl = useMutation(api.files.generateUploadUrl);
 	const updateProfileImage = useMutation(api.users.updateProfileImage);
 	const removeProfileImage = useMutation(api.users.removeProfileImage);
+	const deleteEvent = useMutation(api.events.deleteEvent);
 
 	// Query for uploaded profile image URL
 	const profileImageUrl = useQuery(
@@ -231,15 +256,18 @@ export default function Profile() {
 		const file = e.target.files?.[0];
 		if (!file || !user?.id) return;
 
+		// Clear any previous error
+		setImageUploadError(null);
+
 		// Validate file type
 		if (!file.type.startsWith("image/")) {
-			console.error("Please select an image file");
+			setImageUploadError("Please select an image file");
 			return;
 		}
 
 		// Validate file size (max 5MB)
 		if (file.size > 5 * 1024 * 1024) {
-			console.error("Image must be less than 5MB");
+			setImageUploadError("Image must be less than 5MB");
 			return;
 		}
 
@@ -266,6 +294,7 @@ export default function Profile() {
 			console.log("Profile image uploaded successfully");
 		} catch (error) {
 			console.error("Failed to upload profile image:", error);
+			setImageUploadError("Failed to upload image. Please try again.");
 		} finally {
 			setIsUploadingImage(false);
 			// Reset file input
@@ -301,6 +330,37 @@ export default function Profile() {
 		});
 	};
 
+	const formatEventDateTime = (timestamp: number): string => {
+		return new Date(timestamp).toLocaleDateString("en-US", {
+			weekday: "short",
+			month: "short",
+			day: "numeric",
+			hour: "numeric",
+			minute: "2-digit",
+		});
+	};
+
+	const handleDeleteEvent = async (): Promise<void> => {
+		if (!eventToDelete || !user?.id) return;
+
+		setIsDeleting(true);
+		try {
+			const result = await deleteEvent({
+				eventId: eventToDelete,
+				userId: user.id,
+			});
+			if (result.success) {
+				setEventToDelete(null);
+			} else {
+				console.error("Failed to delete event:", result.message);
+			}
+		} catch (error) {
+			console.error("Failed to delete event:", error);
+		} finally {
+			setIsDeleting(false);
+		}
+	};
+
 	// Render chip for preferences
 	const renderChip = (
 		option: Option,
@@ -312,7 +372,7 @@ export default function Profile() {
 			type="button"
 			key={option.id}
 			onClick={onClick}
-			className={`flex items-center gap-2 ${small ? "px-3 py-2" : "px-4 py-3"} rounded-xl border transition-all duration-200 ${
+			className={`flex items-center gap-2 ${small ? "px-3 py-2" : "px-4 py-3"} rounded-xl border transition-all duration-200 touch-manipulation ${
 				isSelected
 					? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-purple-500/50"
 					: "bg-white/5 border-white/10 hover:border-white/20"
@@ -363,7 +423,7 @@ export default function Profile() {
 								type="button"
 								onClick={() => fileInputRef.current?.click()}
 								disabled={isUploadingImage}
-								className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg border-2 border-[#1e1e2e] hover:scale-110 transition-transform"
+								className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg border-2 border-[#1e1e2e] hover:scale-110 transition-transform touch-manipulation"
 							>
 								<svg
 									className="w-3.5 h-3.5 text-white"
@@ -447,7 +507,7 @@ export default function Profile() {
 						<button
 							type="button"
 							onClick={() => setActiveView("editPreferences")}
-							className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
+							className="text-sm text-purple-400 hover:text-purple-300 transition-colors touch-manipulation"
 						>
 							Edit
 						</button>
@@ -524,8 +584,56 @@ export default function Profile() {
 			<div className="space-y-2">
 				<button
 					type="button"
+					onClick={() => setActiveView("myEvents")}
+					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
+				>
+					<div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+						<svg
+							className="w-5 h-5 text-purple-400"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={1.5}
+								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+							/>
+						</svg>
+					</div>
+					<div className="flex-1">
+						<p className="font-medium text-white">My Events</p>
+						<p className="text-sm text-gray-500">
+							View and manage your created events
+						</p>
+					</div>
+					<div className="flex items-center gap-2">
+						{userEvents && userEvents.length > 0 && (
+							<span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-medium">
+								{userEvents.length}
+							</span>
+						)}
+						<svg
+							className="w-5 h-5 text-gray-500"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M9 5l7 7-7 7"
+							/>
+						</svg>
+					</div>
+				</button>
+
+				<button
+					type="button"
 					onClick={() => setActiveView("editProfile")}
-					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left"
+					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
 						<svg
@@ -566,7 +674,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => setActiveView("editPreferences")}
-					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left"
+					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
 						<svg
@@ -607,7 +715,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => router.push("/help")}
-					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left"
+					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
 						<svg
@@ -646,7 +754,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={handleSignOut}
-					className="w-full p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-4 hover:bg-red-500/20 transition-colors text-left mt-4"
+					className="w-full p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-4 hover:bg-red-500/20 transition-colors text-left mt-4 touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
 						<svg
@@ -680,7 +788,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => setActiveView("main")}
-					className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+					className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors touch-manipulation"
 				>
 					<svg
 						className="w-5 h-5 text-gray-400"
@@ -748,7 +856,7 @@ export default function Profile() {
 								type="button"
 								onClick={() => fileInputRef.current?.click()}
 								disabled={isUploadingImage}
-								className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg border-2 border-[#161621] hover:scale-110 transition-transform"
+								className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg border-2 border-[#161621] hover:scale-110 transition-transform touch-manipulation"
 							>
 								<svg
 									className="w-4 h-4 text-white"
@@ -789,11 +897,16 @@ export default function Profile() {
 								type="button"
 								onClick={handleRemoveImage}
 								disabled={isUploadingImage}
-								className="text-sm text-red-400 hover:text-red-300 transition-colors"
+								className="text-sm text-red-400 hover:text-red-300 transition-colors touch-manipulation"
 							>
 								Remove photo
 							</button>
 						</div>
+					)}
+
+					{/* Image upload error message */}
+					{imageUploadError && (
+						<p className="text-sm text-red-400 text-center">{imageUploadError}</p>
 					)}
 
 					{/* Form */}
@@ -861,7 +974,7 @@ export default function Profile() {
 						type="button"
 						onClick={handleSaveProfile}
 						disabled={!profileForm.firstName.trim() || isSaving}
-						className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 ${
+						className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 							profileForm.firstName.trim() && !isSaving
 								? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"
@@ -889,7 +1002,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => setActiveView("main")}
-					className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+					className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors touch-manipulation"
 				>
 					<svg
 						className="w-5 h-5 text-gray-400"
@@ -1055,7 +1168,7 @@ export default function Profile() {
 											personalityType: option.id,
 										})
 									}
-									className={`flex-1 py-2.5 px-3 rounded-lg font-medium text-sm transition-all duration-200 ${
+									className={`flex-1 py-2.5 px-3 rounded-lg font-medium text-sm transition-all duration-200 touch-manipulation ${
 										preferencesForm.personalityType === option.id
 											? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white"
 											: "text-gray-400 hover:text-white"
@@ -1072,7 +1185,7 @@ export default function Profile() {
 						type="button"
 						onClick={handleSavePreferences}
 						disabled={isSaving}
-						className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 ${
+						className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 							!isSaving
 								? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"
@@ -1092,6 +1205,160 @@ export default function Profile() {
 		</div>
 	);
 
+	// My Events view
+	const renderMyEventsView = (): React.ReactElement => (
+		<div className="space-y-6">
+			{/* Header */}
+			<div className="flex items-center gap-4">
+				<button
+					type="button"
+					onClick={() => setActiveView("main")}
+					className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors touch-manipulation"
+				>
+					<svg
+						className="w-5 h-5 text-gray-400"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M15 19l-7-7 7-7"
+						/>
+					</svg>
+				</button>
+				<h1 className="text-xl font-bold text-white">My Events</h1>
+			</div>
+
+			{/* Events List */}
+			{userEvents === undefined ? (
+				<div className="flex items-center justify-center py-16">
+					<div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+				</div>
+			) : userEvents === null || userEvents.length === 0 ? (
+				<div className="py-16 text-center">
+					<div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+						<svg
+							className="w-10 h-10 text-purple-400"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={1.5}
+								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+							/>
+						</svg>
+					</div>
+					<h3 className="text-xl font-semibold text-white mb-2">
+						No events yet
+					</h3>
+					<p className="text-gray-400 text-sm">
+						Create your first event to connect with others
+					</p>
+					<button
+						type="button"
+						onClick={() => router.push("/home")}
+						className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all touch-manipulation"
+					>
+						Create Event
+					</button>
+				</div>
+			) : (
+				<div className="space-y-3">
+					{userEvents.map((event) => {
+						const isEnded = !event.isLive;
+						return (
+							<div
+								key={event._id}
+								className={`p-4 rounded-2xl bg-[#1e1e2e] border transition-all ${
+									isEnded
+										? "border-white/5 opacity-60"
+										: "border-white/10 hover:border-white/20"
+								}`}
+							>
+								<div className="flex gap-4">
+									{/* Event Image */}
+									<div className="w-20 h-20 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex-shrink-0 overflow-hidden">
+										{event.imageUrl ? (
+											<img
+												src={event.imageUrl}
+												alt=""
+												className="w-full h-full object-cover"
+											/>
+										) : (
+											<div className="w-full h-full flex items-center justify-center text-3xl">
+												{activityOptions.find((a) => a.id === event.activity)
+													?.icon || ""}
+											</div>
+										)}
+									</div>
+
+									{/* Event Info */}
+									<div className="flex-1 min-w-0">
+										<div className="flex items-start justify-between gap-2">
+											<h3 className="font-semibold text-white truncate">
+												{event.title}
+											</h3>
+											<span
+												className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
+													isEnded
+														? "bg-gray-500/20 text-gray-400"
+														: "bg-green-500/20 text-green-400"
+												}`}
+											>
+												{isEnded ? "Ended" : "Live"}
+											</span>
+										</div>
+
+										<p className="text-sm text-gray-400 mt-1">
+											{activityOptions.find((a) => a.id === event.activity)
+												?.label || event.activity}
+										</p>
+
+										<p className="text-xs text-gray-500 mt-1">
+											{formatEventDateTime(event.dateTime)}
+										</p>
+
+										<div className="flex items-center gap-3 mt-2">
+											<span className="text-xs text-gray-400">
+												{event.goingCount} going
+												{event.spotsLeft !== null && (
+													<>
+														{" "}
+														&bull;{" "}
+														{event.spotsLeft > 0
+															? `${event.spotsLeft} spots left`
+															: "Full"}
+													</>
+												)}
+											</span>
+										</div>
+									</div>
+								</div>
+
+								{/* Delete Button */}
+								<div className="mt-3 pt-3 border-t border-white/5 flex justify-end">
+									<button
+										type="button"
+										onClick={() => setEventToDelete(event._id)}
+										className="px-4 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 transition-colors touch-manipulation"
+									>
+										Delete Event
+									</button>
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+		</div>
+	);
+
 	return (
 		<div className="min-h-screen bg-[#161621] text-white">
 			<Navbar />
@@ -1106,11 +1373,80 @@ export default function Profile() {
 						{activeView === "main" && renderMainView()}
 						{activeView === "editProfile" && renderEditProfileView()}
 						{activeView === "editPreferences" && renderEditPreferencesView()}
+						{activeView === "myEvents" && renderMyEventsView()}
 					</>
 				)}
 			</main>
 
 			{activeView === "main" && <BottomNav />}
+
+			{/* Delete Event Confirmation Modal */}
+			{eventToDelete && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+					{/* Backdrop */}
+					<button
+						type="button"
+						onClick={() => !isDeleting && setEventToDelete(null)}
+						className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto touch-manipulation"
+						aria-label="Close modal"
+					/>
+
+					{/* Modal Content */}
+					<div className="relative w-[90%] max-w-sm mx-auto p-6 rounded-2xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
+						{/* Warning Icon */}
+						<div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+							<svg
+								className="w-8 h-8 text-red-400"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={1.5}
+									d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+								/>
+							</svg>
+						</div>
+
+						<h3 className="text-xl font-semibold text-white text-center mb-2">
+							Delete Event?
+						</h3>
+						<p className="text-gray-400 text-sm text-center mb-6">
+							This will permanently delete this event and all associated data
+							including the group chat. This action cannot be undone.
+						</p>
+
+						{/* Action Buttons */}
+						<div className="flex gap-3">
+							<button
+								type="button"
+								onClick={() => setEventToDelete(null)}
+								disabled={isDeleting}
+								className="flex-1 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/15 transition-colors touch-manipulation disabled:opacity-50"
+							>
+								Cancel
+							</button>
+							<button
+								type="button"
+								onClick={handleDeleteEvent}
+								disabled={isDeleting}
+								className="flex-1 py-3 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition-colors touch-manipulation disabled:opacity-50"
+							>
+								{isDeleting ? (
+									<span className="flex items-center justify-center gap-2">
+										<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+										Deleting...
+									</span>
+								) : (
+									"Delete"
+								)}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

@@ -1499,13 +1499,13 @@ export default function Explore() {
 					<button
 						type="button"
 						aria-label="Close activity modal"
-						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 touch-manipulation"
 						onClick={handleCloseModal}
 						disabled={isSubmitting}
 					/>
-					<div className="fixed inset-0 z-[51] overflow-y-auto">
+					<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
-							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl">
+							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 								{/* Modal Header */}
 								<div
 									className={`px-6 py-5 bg-gradient-to-r ${selectedActivity.gradient} bg-opacity-20 rounded-t-3xl`}

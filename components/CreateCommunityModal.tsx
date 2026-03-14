@@ -174,12 +174,12 @@ export default function CreateCommunityModal({
 			<button
 				type="button"
 				aria-label="Close create community modal"
-				className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+				className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm touch-manipulation"
 				onClick={handleClose}
 			/>
-			<div className="fixed inset-0 z-[51] overflow-y-auto">
+			<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
 				<div className="min-h-full flex items-center justify-center p-4 py-8">
-					<div className="w-full max-w-lg rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl">
+					<div className="w-full max-w-lg rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 						{/* Header */}
 						<div className="px-6 py-5 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#1e1e2e] rounded-t-3xl z-10">
 							<div>

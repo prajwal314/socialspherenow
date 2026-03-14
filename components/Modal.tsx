@@ -29,18 +29,18 @@ export default function Modal({
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center">
+		<div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
 			<button
 				type="button"
 				aria-label="Close modal"
-				className="absolute inset-0 bg-black bg-opacity-50"
+				className="absolute inset-0 bg-black bg-opacity-50 pointer-events-auto touch-manipulation"
 				onClick={onClose}
 			/>
 			<div
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="modal-title"
-				className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
+				className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto pointer-events-auto"
 			>
 				<div className="flex items-center justify-between p-4 border-b">
 					<h2 id="modal-title" className="text-lg font-semibold">

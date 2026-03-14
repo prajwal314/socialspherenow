@@ -1016,12 +1016,12 @@ export default function Home() {
 					<button
 						type="button"
 						aria-label="Close create event modal"
-						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 touch-manipulation"
 						onClick={() => setIsModalOpen(false)}
 					/>
-					<div className="fixed inset-0 z-[51] overflow-y-auto">
+					<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
-							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl">
+							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 								{/* Modal Header */}
 								<div className="px-6 py-5 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#1e1e2e] rounded-t-3xl z-10">
 									<h3 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
@@ -1300,12 +1300,12 @@ export default function Home() {
 					<button
 						type="button"
 						aria-label="Close event details modal"
-						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 touch-manipulation"
 						onClick={() => setSelectedEvent(null)}
 					/>
-					<div className="fixed inset-0 z-[51] overflow-y-auto">
+					<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
-							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl">
+							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 								{eventDetails ? (
 									<>
 										{/* Event Image */}
