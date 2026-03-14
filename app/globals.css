@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+/* Fix mobile touch issues */
+button,
+a,
+[role="button"],
+input[type="submit"],
+input[type="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure modals work properly on mobile */
+.modal-overlay {
+  -webkit-overflow-scrolling: touch;
+}

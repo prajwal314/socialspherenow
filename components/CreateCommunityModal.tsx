@@ -174,10 +174,10 @@ export default function CreateCommunityModal({
 			<button
 				type="button"
 				aria-label="Close create community modal"
-				className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm touch-manipulation"
+				className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm touch-manipulation"
 				onClick={handleClose}
 			/>
-			<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
+			<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 				<div className="min-h-full flex items-center justify-center p-4 py-8">
 					<div className="w-full max-w-lg rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 						{/* Header */}
@@ -291,9 +291,9 @@ export default function CreateCommunityModal({
 										type="button"
 										onClick={() => setStep(2)}
 										disabled={!isStep1Valid || !canCreateMore}
-										className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 ${
+										className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 											isStep1Valid && canCreateMore
-												? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25"
+												? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25 active:scale-[0.98]"
 												: "bg-white/10 text-gray-500 cursor-not-allowed"
 										}`}
 									>
@@ -446,16 +446,16 @@ export default function CreateCommunityModal({
 										<button
 											type="button"
 											onClick={() => setStep(1)}
-											className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-medium hover:bg-white/10 transition-colors"
+											className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-medium hover:bg-white/10 transition-colors touch-manipulation active:scale-[0.98]"
 										>
 											Back
 										</button>
 										<button
 											type="submit"
 											disabled={!isStep2Valid || isCreating || !canCreateMore}
-											className={`flex-1 py-3 rounded-xl font-medium transition-all duration-200 ${
+											className={`flex-1 py-3 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 												isStep2Valid && !isCreating && canCreateMore
-													? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25"
+													? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25 active:scale-[0.98]"
 													: "bg-white/10 text-gray-500 cursor-not-allowed"
 											}`}
 										>

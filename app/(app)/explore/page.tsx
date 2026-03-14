@@ -1183,16 +1183,16 @@ export default function Explore() {
 							Back
 						</button>
 
-						<button
-							type="button"
-							onClick={handleSubmit}
-							disabled={isSubmitting}
-							className={`px-6 py-2.5 rounded-xl font-medium transition-all duration-200 ${
-								!isSubmitting
-									? "bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
-									: "bg-white/10 text-gray-500 cursor-not-allowed"
-							}`}
-						>
+					<button
+						type="button"
+						onClick={handleSubmit}
+						disabled={isSubmitting}
+						className={`px-6 py-2.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
+							!isSubmitting
+								? "bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98]"
+								: "bg-white/10 text-gray-500 cursor-not-allowed"
+						}`}
+					>
 							{isSubmitting ? (
 								<span className="flex items-center gap-2">
 									<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -1499,11 +1499,11 @@ export default function Explore() {
 					<button
 						type="button"
 						aria-label="Close activity modal"
-						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 touch-manipulation"
+						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] touch-manipulation"
 						onClick={handleCloseModal}
 						disabled={isSubmitting}
 					/>
-					<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
+					<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
 							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 								{/* Modal Header */}

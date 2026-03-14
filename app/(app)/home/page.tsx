@@ -654,14 +654,14 @@ export default function Home() {
 											disabled={
 												alreadySent || connectingTo === search._id || isFull
 											}
-											className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all ${
+											className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all touch-manipulation ${
 												isFull
 													? "bg-red-500/10 text-red-400 cursor-default"
 													: alreadySent
 														? "bg-white/5 text-gray-500 cursor-default"
 														: connectingTo === search._id
 															? "bg-gradient-to-r from-cyan-500/50 to-purple-500/50 text-white"
-															: "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25"
+															: "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25 active:scale-[0.98]"
 											}`}
 										>
 											{connectingTo === search._id ? (
@@ -1016,10 +1016,10 @@ export default function Home() {
 					<button
 						type="button"
 						aria-label="Close create event modal"
-						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 touch-manipulation"
+						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] touch-manipulation"
 						onClick={() => setIsModalOpen(false)}
 					/>
-					<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
+					<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
 							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 								{/* Modal Header */}
@@ -1272,9 +1272,9 @@ export default function Home() {
 									<button
 										type="submit"
 										disabled={!isFormValid || isCreating}
-										className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 ${
+										className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 											isFormValid && !isCreating
-												? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02]"
+												? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98]"
 												: "bg-white/10 text-gray-500 cursor-not-allowed"
 										}`}
 									>
@@ -1300,10 +1300,10 @@ export default function Home() {
 					<button
 						type="button"
 						aria-label="Close event details modal"
-						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 touch-manipulation"
+						className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] touch-manipulation"
 						onClick={() => setSelectedEvent(null)}
 					/>
-					<div className="fixed inset-0 z-[51] overflow-y-auto pointer-events-none">
+					<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
 							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 								{eventDetails ? (
