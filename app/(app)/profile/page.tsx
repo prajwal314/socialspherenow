@@ -1382,7 +1382,7 @@ export default function Profile() {
 
 			{/* Delete Event Confirmation Modal */}
 			{eventToDelete && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+				<div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none">
 					{/* Backdrop */}
 					<button
 						type="button"

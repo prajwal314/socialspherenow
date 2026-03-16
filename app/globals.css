@@ -1,16 +1,92 @@
 @import "tailwindcss";
 
-/* Fix mobile touch issues */
+/* ============================================
+   MOBILE TOUCH RESPONSIVENESS FIXES
+   ============================================ */
+
+/* Base touch improvements for all interactive elements */
 button,
 a,
 [role="button"],
 input[type="submit"],
-input[type="button"] {
+input[type="button"],
+select,
+label[for],
+.cursor-pointer {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Ensure text inputs allow proper touch interaction */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+textarea {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+/* Minimum touch target sizes for mobile accessibility (44x44px) */
+@media (max-width: 768px) {
+  button:not([class*="w-"]):not([class*="h-"]),
+  a:not([class*="w-"]):not([class*="h-"]),
+  [role="button"]:not([class*="w-"]):not([class*="h-"]) {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* Ensure modals work properly on mobile */
 .modal-overlay {
   -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for iOS Safari delayed clicks */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection on buttons during touch */
+button,
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Ensure fixed positioned elements work correctly on mobile */
+.fixed {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Improve touch scrolling in scrollable containers */
+.overflow-auto,
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-scroll,
+.overflow-y-scroll,
+.overflow-x-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch manipulation utility class */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Prevent double-tap zoom on interactive elements */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  touch-action: manipulation;
 }

@@ -1178,7 +1178,7 @@ export default function Explore() {
 						<button
 							type="button"
 							onClick={handleBack}
-							className="px-5 py-2.5 rounded-xl border border-white/20 text-white font-medium hover:bg-white/5 transition-all"
+							className="px-5 py-2.5 min-h-[44px] rounded-xl border border-white/20 text-white font-medium hover:bg-white/5 transition-all touch-manipulation active:scale-95"
 						>
 							Back
 						</button>
@@ -1187,7 +1187,7 @@ export default function Explore() {
 						type="button"
 						onClick={handleSubmit}
 						disabled={isSubmitting}
-						className={`px-6 py-2.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
+						className={`px-6 py-2.5 min-h-[44px] rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 							!isSubmitting
 								? "bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98]"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"
@@ -1250,7 +1250,7 @@ export default function Explore() {
 								onClick={() =>
 									handleSelectOption(currentQuestion.id, option.id)
 								}
-								className={`p-4 rounded-xl border text-left transition-all duration-200 ${
+								className={`p-4 min-h-[44px] rounded-xl border text-left transition-all duration-200 touch-manipulation active:scale-[0.98] ${
 									isSelected
 										? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-purple-500/50"
 										: "bg-white/5 border-white/10 hover:border-white/20"
@@ -1273,7 +1273,7 @@ export default function Explore() {
 						<button
 							type="button"
 							onClick={handleBack}
-							className="px-5 py-2.5 rounded-xl border border-white/20 text-white font-medium hover:bg-white/5 transition-all"
+							className="px-5 py-2.5 min-h-[44px] rounded-xl border border-white/20 text-white font-medium hover:bg-white/5 transition-all touch-manipulation active:scale-95"
 						>
 							Back
 						</button>
@@ -1285,7 +1285,7 @@ export default function Explore() {
 						type="button"
 						onClick={handleNext}
 						disabled={!canProceed()}
-						className={`px-6 py-2.5 rounded-xl font-medium transition-all duration-200 ${
+						className={`px-6 py-2.5 min-h-[44px] rounded-xl font-medium transition-all duration-200 touch-manipulation active:scale-95 ${
 							canProceed()
 								? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"

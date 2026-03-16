@@ -49,7 +49,7 @@ function NetworkSphere({
 	isHovered,
 	onPositionUpdate,
 }: NetworkSphereProps) {
-	const sphereRef = useRef<HTMLButtonElement>(null);
+	const sphereRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		if (sphereRef.current) {
@@ -58,10 +58,11 @@ function NetworkSphere({
 	}, [id, x, y, size, onPositionUpdate]);
 
 	return (
-		<button
-			type="button"
+		<div
 			ref={sphereRef}
-			className="absolute pointer-events-auto cursor-pointer transition-all duration-500 ease-out border-0 bg-transparent p-0"
+			role="presentation"
+			aria-hidden="true"
+			className="absolute pointer-events-none md:pointer-events-auto cursor-pointer transition-all duration-500 ease-out"
 			style={{
 				left: `${x}%`,
 				top: `${y}%`,
@@ -105,7 +106,7 @@ function NetworkSphere({
 					filter: isHovered ? "blur(4px)" : "blur(6px)",
 				}}
 			/>
-		</button>
+		</div>
 	);
 }
 

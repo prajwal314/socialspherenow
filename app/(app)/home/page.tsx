@@ -962,7 +962,7 @@ export default function Home() {
 				<button
 					type="button"
 					onClick={() => setIsCommunityModalOpen(true)}
-					className="px-5 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-medium flex items-center gap-2 shadow-lg shadow-cyan-500/30 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200"
+					className="px-5 py-3 min-h-[48px] rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-medium flex items-center gap-2 shadow-lg shadow-cyan-500/30 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 touch-manipulation active:scale-95"
 				>
 					<svg
 						className="w-5 h-5"
@@ -984,7 +984,7 @@ export default function Home() {
 				<button
 					type="button"
 					onClick={() => setIsModalOpen(true)}
-					className="px-5 py-3 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium flex items-center gap-2 shadow-lg shadow-purple-500/30 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-200"
+					className="px-5 py-3 min-h-[48px] rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium flex items-center gap-2 shadow-lg shadow-purple-500/30 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-200 touch-manipulation active:scale-95"
 				>
 					<svg
 						className="w-5 h-5"

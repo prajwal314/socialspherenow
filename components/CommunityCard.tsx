@@ -47,7 +47,7 @@ export default function CommunityCard({
 					<button
 						type="button"
 						onClick={() => onJoin(community)}
-						className={`px-4 py-1.5 rounded-full text-sm font-medium ${
+						className={`px-4 py-1.5 min-h-[44px] rounded-full text-sm font-medium touch-manipulation active:scale-95 transition-transform ${
 							isJoined ? "bg-gray-100 text-gray-600" : "bg-blue-600 text-white"
 						}`}
 					>

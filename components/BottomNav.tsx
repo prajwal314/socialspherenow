@@ -100,7 +100,7 @@ export default function BottomNav() {
 						<Link
 							key={item.path}
 							href={item.path}
-							className={`flex flex-col items-center justify-center py-2 px-4 rounded-xl transition-all duration-200 ${
+							className={`flex flex-col items-center justify-center py-2 px-4 min-h-[48px] min-w-[48px] rounded-xl transition-all duration-200 touch-manipulation active:scale-95 ${
 								isActive
 									? "text-purple-400"
 									: "text-gray-500 hover:text-gray-300"
