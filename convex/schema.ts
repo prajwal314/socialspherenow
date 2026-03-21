@@ -17,7 +17,9 @@ export default defineSchema({
 		availability: v.optional(v.array(v.string())),
 		personalityType: v.optional(v.string()),
 		hasCompletedPreferences: v.optional(v.boolean()),
-	}).index("by_workos_id", ["workosId"]),
+	})
+		.index("by_workos_id", ["workosId"])
+		.index("by_email", ["email"]),
 
 	events: defineTable({
 		creatorId: v.string(), // workosId of creator
