@@ -35,7 +35,14 @@ export default authkitMiddleware({
 	eagerAuth: true,
 	middlewareAuth: {
 		enabled: true,
-		unauthenticatedPaths: ["/", "/login", "/sign-in", "/sign-up"],
+		unauthenticatedPaths: [
+			"/",
+			"/login",
+			"/sign-in",
+			"/sign-up",
+			"/sitemap.xml",
+			"/robots.txt",
+		],
 	},
 	redirectUri: getRedirectUri(),
 });
