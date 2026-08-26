@@ -24,11 +24,9 @@ dist-ssr
 *.sln
 *.sw?
 
-AGENTS.md
+# Project-specific ignores
+convex/_generated
+tsconfig.tsbuildinfo
 .env
 .env.local
 .env.*.local
-tsconfig.tsbuildinfo
-
-
-nul 

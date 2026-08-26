@@ -1,16 +1,50 @@
-# React + Vite
+# SocialSphere Now
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern social networking platform built with Next.js 15, React 19, and Convex for real-time data.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+SocialSphere Now is a full-featured social platform enabling users to create communities, share events, and connect with others in real-time. The application leverages modern web technologies for performance, scalability, and developer experience.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: Next.js 15.5.12 (React framework with App Router)
+- **Language**: TypeScript 5.8.0
+- **UI Library**: React 19.2.0 + React DOM 19.2.0
+- **Styling**: Tailwind CSS 4.1.18 with PostCSS and Autoprefixer
+- **Backend**: Convex (real-time database with serverless functions)
+- **Authentication**: @workos-inc/authkit-nextjs (OAuth/SAML authentication)
+- **Build Tool**: Turbopack (Next.js development server)
+- **Linting & Formatting**: Biome 2.4.6
+- **Concurrency**: concurrently (for running dev servers)
 
-## Expanding the ESLint configuration
+## Key Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Real-time community creation and management
+- Event scheduling and discovery
+- User profiles and networking
+- Protected routes and authentication
+- Responsive design with modern UI
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server (convex + next)
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Available Scripts
+
+- `dev` - Start development with Convex and Next.js
+- `build` - Build production Next.js app
+- `build:full` - Deploy Convex and build
+- `convex:deploy` - Deploy Convex backend
+- `start` - Start production server
+- `lint` - Run Biome linting
+- `format` - Format code with Biome
