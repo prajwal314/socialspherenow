@@ -13,7 +13,6 @@ export const dynamic = "force-dynamic";
 
 import BottomNav from "@/components/BottomNav";
 import CommunityDetailModal from "@/components/CommunityDetailModal";
-import Navbar from "@/components/Navbar";
 import UserProfileModal from "@/components/UserProfileModal";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -426,19 +425,22 @@ export default function Inbox() {
 
 	// Chat list view
 	const renderChatList = () => (
-		<div className="flex flex-col h-full">
+		<div className="max-w-6xl mx-auto">
 			{/* Header */}
-			<header className="px-4 py-4 border-b border-white/10">
-				<h1 className="text-2xl font-bold">
-					<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-						Inbox
-					</span>
-				</h1>
-				<p className="text-gray-500 text-sm mt-1">Your conversations</p>
+			<header className="relative mb-8">
+				<div className="absolute -top-20 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+				<div className="relative">
+					<h1 className="text-3xl sm:text-4xl font-bold mb-2">
+						<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+							Inbox
+						</span>
+					</h1>
+					<p className="text-gray-400">Your conversations</p>
+				</div>
 			</header>
 
 			{/* Filter bar */}
-			<div className="px-4 py-3 border-b border-white/10">
+			<div className="sticky top-0 z-10 -mx-4 px-4 sm:mx-0 sm:px-0 py-3 bg-[#161621]/80 backdrop-blur-md border-b border-white/10 sm:rounded-2xl sm:border sm:p-4 mb-4">
 				<div
 					ref={filterScrollRef}
 					className="flex gap-2 overflow-x-auto scrollbar-hide pb-1"
@@ -451,7 +453,7 @@ export default function Inbox() {
 							onClick={() => setActiveFilter(filter.id)}
 							className={`flex items-center gap-1.5 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all shrink-0 ${
 								activeFilter === filter.id
-									? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
+									? "bg-[#0c8b96] text-white border border-white/20 shadow-lg shadow-gray-400/25"
 									: "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10"
 							}`}
 						>
@@ -463,7 +465,7 @@ export default function Inbox() {
 			</div>
 
 			{/* Chat list */}
-			<div className="flex-1 overflow-y-auto">
+			<div className="sm:rounded-2xl bg-[#1e1e2e] border border-white/10 -mx-4 sm:mx-0 overflow-hidden">
 				{chats === undefined ? (
 					<div className="flex items-center justify-center py-20">
 						<div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
@@ -642,7 +644,7 @@ export default function Inbox() {
 						<button
 							type="button"
 							onClick={() => setActiveFilter("all")}
-							className="mt-4 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white text-sm font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+							className="mt-4 px-4 py-2 rounded-full bg-[#0c8b96] text-white border border-white/20 text-sm font-medium hover:shadow-lg hover:shadow-gray-400/25 transition-all"
 						>
 							View All
 						</button>
@@ -907,7 +909,7 @@ export default function Inbox() {
 										<div
 											className={`px-4 py-2.5 rounded-2xl ${
 												isOwnMessage
-													? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white rounded-br-md"
+													? "bg-[#0c8b96] text-white border border-white/20 rounded-br-md"
 													: "bg-[#252536] text-white rounded-bl-md"
 											}`}
 										>
@@ -958,7 +960,7 @@ export default function Inbox() {
 						disabled={!messageInput.trim() || isSending}
 						className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
 							messageInput.trim() && !isSending
-								? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
+								? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25"
 								: "bg-white/5 text-gray-600 cursor-not-allowed"
 						}`}
 					>
@@ -986,10 +988,8 @@ export default function Inbox() {
 	);
 
 	return (
-		<div className="min-h-screen bg-[#161621] text-white">
-			<Navbar />
-
-			<main className="h-[calc(100vh-8rem)] pt-16">
+		<div className="min-h-screen bg-transparent text-white">
+			<main className={`${selectedChatId ? "h-[calc(100vh-4rem)]" : "min-h-[calc(100vh-4rem)] pt-6 pb-24 px-4"}`}>
 				{selectedChatId ? renderChatView() : renderChatList()}
 			</main>
 

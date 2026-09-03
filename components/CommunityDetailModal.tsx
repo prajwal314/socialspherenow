@@ -328,7 +328,7 @@ export default function CommunityDetailModal({
 			/>
 			<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 				<div className="min-h-full flex items-center justify-center p-4 py-8">
-					<div className="w-full max-w-lg rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto">
+					<div className="w-full max-w-lg rounded-3xl glass-strong glass-shine border border-white/10 shadow-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto">
 						{/* Header with image */}
 						<div className="relative shrink-0">
 							{/* Cover Image */}
@@ -573,7 +573,7 @@ export default function CommunityDetailModal({
 															!isSaving &&
 															editForm.name.trim() &&
 															editForm.description.trim()
-																? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg"
+																? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg"
 																: "bg-white/10 text-gray-500 cursor-not-allowed"
 														}`}
 													>
@@ -752,7 +752,7 @@ export default function CommunityDetailModal({
 															disabled={!groupForm.name.trim()}
 															className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
 																groupForm.name.trim()
-																	? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white active:scale-[0.98]"
+																	? "bg-[#0c8b96] text-white border border-white/20 active:scale-[0.98]"
 																	: "bg-white/10 text-gray-500 cursor-not-allowed"
 															}`}
 														>

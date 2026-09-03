@@ -30,6 +30,21 @@
 			}
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["components/ui/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noNonNullAssertion": "off"
+					},
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		}
+	],
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double"

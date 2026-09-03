@@ -15,14 +15,14 @@ export default async function LoginPage() {
 	const signInUrl = await getSignInUrl();
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#161621]">
+		<div className="flex flex-col items-center justify-center min-h-screen p-6 bg-transparent">
 			<h1 className="text-2xl font-bold mb-6 text-white">
 				Sign in to SocialSphere
 			</h1>
 
 			<Link
 				href={signInUrl}
-				className="bg-gradient-to-r from-purple-500 to-cyan-500 text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition"
+				className="bg-[#0c8b96] text-white border border-white/20 px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition"
 			>
 				Sign In with WorkOS
 			</Link>

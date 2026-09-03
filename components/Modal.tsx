@@ -33,24 +33,24 @@ export default function Modal({
 			<button
 				type="button"
 				aria-label="Close modal"
-				className="absolute inset-0 bg-black bg-opacity-50 pointer-events-auto touch-manipulation"
+				className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto touch-manipulation"
 				onClick={onClose}
 			/>
 			<div
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="modal-title"
-				className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto pointer-events-auto z-[61]"
+				className="relative glass-strong glass-shine rounded-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto pointer-events-auto z-[61]"
 			>
-				<div className="flex items-center justify-between p-4 border-b">
-					<h2 id="modal-title" className="text-lg font-semibold">
+				<div className="flex items-center justify-between p-4 border-b border-white/10">
+					<h2 id="modal-title" className="text-lg font-semibold text-white">
 						{title}
 					</h2>
 					<button
 						type="button"
 						aria-label="Close modal"
 						onClick={onClose}
-						className="text-gray-400 hover:text-gray-600 text-2xl"
+						className="text-white/50 hover:text-white text-2xl"
 					>
 						&times;
 					</button>

@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import BottomNav from "@/components/BottomNav";
-import Navbar from "@/components/Navbar";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/lib/auth-context";
@@ -423,7 +422,7 @@ export default function Profile() {
 								type="button"
 								onClick={() => fileInputRef.current?.click()}
 								disabled={isUploadingImage}
-								className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg border-2 border-[#1e1e2e] hover:scale-110 transition-transform touch-manipulation"
+								className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center shadow-lg border-2 border-[#1e1e2e] hover:scale-110 transition-transform touch-manipulation"
 							>
 								<svg
 									className="w-3.5 h-3.5 text-white"
@@ -856,7 +855,7 @@ export default function Profile() {
 								type="button"
 								onClick={() => fileInputRef.current?.click()}
 								disabled={isUploadingImage}
-								className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg border-2 border-[#161621] hover:scale-110 transition-transform touch-manipulation"
+								className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg border-2 border-[#161621] hover:scale-110 transition-transform touch-manipulation"
 							>
 								<svg
 									className="w-4 h-4 text-white"
@@ -976,7 +975,7 @@ export default function Profile() {
 						disabled={!profileForm.firstName.trim() || isSaving}
 						className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 							profileForm.firstName.trim() && !isSaving
-								? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
+								? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"
 						}`}
 					>
@@ -1170,7 +1169,7 @@ export default function Profile() {
 									}
 									className={`flex-1 py-2.5 px-3 rounded-lg font-medium text-sm transition-all duration-200 touch-manipulation ${
 										preferencesForm.personalityType === option.id
-											? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white"
+											? "bg-[#0c8b96] text-white border border-white/20"
 											: "text-gray-400 hover:text-white"
 									}`}
 								>
@@ -1187,7 +1186,7 @@ export default function Profile() {
 						disabled={isSaving}
 						className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 							!isSaving
-								? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
+								? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"
 						}`}
 					>
@@ -1263,7 +1262,7 @@ export default function Profile() {
 					<button
 						type="button"
 						onClick={() => router.push("/home")}
-						className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all touch-manipulation"
+						className="mt-6 px-6 py-3 rounded-xl bg-[#0c8b96] text-white border border-white/20 font-medium hover:shadow-lg hover:shadow-gray-400/25 transition-all touch-manipulation"
 					>
 						Create Event
 					</button>
@@ -1360,10 +1359,8 @@ export default function Profile() {
 	);
 
 	return (
-		<div className="min-h-screen bg-[#161621] text-white">
-			<Navbar />
-
-			<main className="max-w-2xl mx-auto px-4 pt-20 pb-24">
+		<div className="min-h-screen bg-transparent text-white">
+			<main className="max-w-2xl mx-auto px-4 pt-6 pb-24">
 				{currentUser === undefined ? (
 					<div className="flex items-center justify-center py-20">
 						<div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />

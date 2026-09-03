@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import BottomNav from "@/components/BottomNav";
-import Navbar from "@/components/Navbar";
 
 export const dynamic = "force-dynamic";
 
@@ -62,10 +61,8 @@ export default function HelpSupport(): React.ReactElement {
 	};
 
 	return (
-		<div className="min-h-screen bg-[#161621] text-white">
-			<Navbar />
-
-			<main className="max-w-2xl mx-auto px-4 pt-20 pb-24">
+		<div className="min-h-screen bg-transparent text-white">
+			<main className="max-w-2xl mx-auto px-4 pt-6 pb-24">
 				{/* Header */}
 				<header className="mb-8">
 					<button
@@ -273,7 +270,7 @@ export default function HelpSupport(): React.ReactElement {
 									disabled={!feedbackText.trim()}
 									className={`w-full py-3 rounded-xl font-medium transition-all ${
 										feedbackText.trim()
-											? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
+											? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25"
 											: "bg-white/10 text-gray-500 cursor-not-allowed"
 									}`}
 								>

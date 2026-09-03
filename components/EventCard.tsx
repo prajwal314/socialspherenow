@@ -17,7 +17,7 @@ export default function EventCard({ event }: EventCardProps) {
 	const { title, date, location, imageUrl, attendees } = event || {};
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm overflow-hidden">
+		<div className="glass glass-shine rounded-2xl overflow-hidden">
 			{imageUrl && (
 				<img
 					src={imageUrl}
@@ -26,11 +26,11 @@ export default function EventCard({ event }: EventCardProps) {
 				/>
 			)}
 			<div className="p-4">
-				<h3 className="font-semibold text-lg mb-1">
+				<h3 className="font-semibold text-lg mb-1 text-white">
 					{title || "Untitled Event"}
 				</h3>
 				{date && (
-					<p className="text-sm text-gray-500 mb-1">
+					<p className="text-sm text-white/60 mb-1">
 						{new Date(date).toLocaleDateString("en-US", {
 							weekday: "short",
 							month: "short",
@@ -40,9 +40,9 @@ export default function EventCard({ event }: EventCardProps) {
 						})}
 					</p>
 				)}
-				{location && <p className="text-sm text-gray-500 mb-2">{location}</p>}
+				{location && <p className="text-sm text-white/60 mb-2">{location}</p>}
 				{attendees !== undefined && (
-					<p className="text-sm text-blue-600">{attendees} attending</p>
+					<p className="text-sm text-white/80">{attendees} attending</p>
 				)}
 			</div>
 		</div>

@@ -148,7 +148,7 @@ export default function PreferenceOnboarding() {
 					key={`progress-step-${step}`}
 					className={`h-2 flex-1 rounded-full transition-all duration-300 ${
 						step <= currentStep
-							? "bg-gradient-to-r from-purple-500 to-cyan-500"
+							? "bg-[#0c8b96] border border-white/40"
 							: "bg-white/10"
 					}`}
 				/>
@@ -167,7 +167,7 @@ export default function PreferenceOnboarding() {
 			onClick={onClick}
 			className={`flex items-center gap-3 px-5 py-4 rounded-2xl border transition-all duration-200 ${
 				isSelected
-					? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-purple-500/50 shadow-lg shadow-purple-500/10"
+					? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-purple-500/50 shadow-lg shadow-gray-400/10"
 					: "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10"
 			}`}
 		>
@@ -186,7 +186,7 @@ export default function PreferenceOnboarding() {
 					onClick={() => setPersonalityType(option.id)}
 					className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-200 ${
 						personalityType === option.id
-							? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white"
+							? "bg-[#0c8b96] text-white border border-white/20"
 							: "text-gray-400 hover:text-white"
 					}`}
 				>
@@ -370,7 +370,7 @@ export default function PreferenceOnboarding() {
 	};
 
 	return (
-		<div className="min-h-screen bg-[#161621] text-white">
+		<div className="min-h-screen bg-transparent text-white">
 			<div className="max-w-2xl mx-auto px-4 py-8">
 				<header className="mb-8">
 					<div className="flex items-center justify-between mb-6">
@@ -388,7 +388,7 @@ export default function PreferenceOnboarding() {
 					{renderStep()}
 				</main>
 
-				<footer className="flex items-center justify-between gap-4 mt-8 pt-8 border-t border-white/10">
+				<footer className="flex items-center justify-between gap-4 mt-8 pt-8 glass-solid rounded-none border-t border-white/10">
 					{currentStep > 1 ? (
 						<button
 							type="button"
@@ -408,7 +408,7 @@ export default function PreferenceOnboarding() {
 							disabled={!canProceed()}
 							className={`px-8 py-3 rounded-full font-medium transition-all duration-200 ${
 								canProceed()
-									? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105"
+									? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25 hover:scale-105"
 									: "bg-white/10 text-gray-500 cursor-not-allowed"
 							}`}
 						>
@@ -419,7 +419,7 @@ export default function PreferenceOnboarding() {
 							type="button"
 							onClick={handleFinish}
 							disabled={isLoading}
-							className="px-8 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+							className="px-8 py-3 rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium hover:shadow-lg hover:shadow-gray-400/25 hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{isLoading ? "Saving..." : "Finish & Continue"}
 						</button>

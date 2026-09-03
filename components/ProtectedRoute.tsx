@@ -105,7 +105,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 						<button
 							type="button"
 							onClick={() => window.location.reload()}
-							className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+							className="w-full py-3 rounded-xl bg-[#0c8b96] text-white border border-white/20 font-medium hover:shadow-lg hover:shadow-gray-400/25 transition-all"
 						>
 							Retry
 						</button>

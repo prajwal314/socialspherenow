@@ -414,7 +414,7 @@ export default function Home() {
 	const isLoading = currentUser === undefined;
 
 	return (
-		<div className="min-h-screen bg-[#161621] text-white">
+		<div className="min-h-screen bg-transparent text-white">
 			<Navbar />
 
 			<main className="max-w-6xl mx-auto px-4 pt-20 pb-24">
@@ -473,7 +473,7 @@ export default function Home() {
 										<button
 											type="button"
 											onClick={() => handleAcceptRequest(request._id)}
-											className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white text-sm font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
+											className="flex-1 px-4 py-2.5 rounded-xl bg-[#0c8b96] text-white border border-white/20 text-sm font-medium hover:shadow-lg hover:shadow-gray-400/25 transition-all duration-200"
 										>
 											Accept
 										</button>
@@ -661,7 +661,7 @@ export default function Home() {
 														? "bg-white/5 text-gray-500 cursor-default"
 														: connectingTo === search._id
 															? "bg-gradient-to-r from-cyan-500/50 to-purple-500/50 text-white"
-															: "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25 active:scale-[0.98]"
+															: "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25 active:scale-[0.98]"
 											}`}
 										>
 											{connectingTo === search._id ? (
@@ -859,7 +859,7 @@ export default function Home() {
 							<button
 								type="button"
 								onClick={() => setIsModalOpen(true)}
-								className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white text-sm font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+								className="px-5 py-2 rounded-full bg-[#0c8b96] text-white border border-white/20 text-sm font-medium hover:shadow-lg hover:shadow-gray-400/25 transition-all"
 							>
 								Create Event
 							</button>
@@ -962,7 +962,7 @@ export default function Home() {
 				<button
 					type="button"
 					onClick={() => setIsCommunityModalOpen(true)}
-					className="px-5 py-3 min-h-[48px] rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-medium flex items-center gap-2 shadow-lg shadow-cyan-500/30 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-200 touch-manipulation active:scale-95"
+					className="px-5 py-3 min-h-[48px] rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium flex items-center gap-2 shadow-lg shadow-gray-400/30 hover:scale-105 hover:shadow-xl hover:shadow-gray-400/40 transition-all duration-200 touch-manipulation active:scale-95"
 				>
 					<svg
 						className="w-5 h-5"
@@ -984,7 +984,7 @@ export default function Home() {
 				<button
 					type="button"
 					onClick={() => setIsModalOpen(true)}
-					className="px-5 py-3 min-h-[48px] rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium flex items-center gap-2 shadow-lg shadow-purple-500/30 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-200 touch-manipulation active:scale-95"
+					className="px-5 py-3 min-h-[48px] rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium flex items-center gap-2 shadow-lg shadow-gray-400/30 hover:scale-105 hover:shadow-xl hover:shadow-gray-400/40 transition-all duration-200 touch-manipulation active:scale-95"
 				>
 					<svg
 						className="w-5 h-5"
@@ -1274,7 +1274,7 @@ export default function Home() {
 										disabled={!isFormValid || isCreating}
 										className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 											isFormValid && !isCreating
-												? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98]"
+												? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25 hover:scale-[1.02] active:scale-[0.98]"
 												: "bg-white/10 text-gray-500 cursor-not-allowed"
 										}`}
 									>
@@ -1530,7 +1530,7 @@ export default function Home() {
 																type="button"
 																onClick={() => handleJoinEvent("going")}
 																disabled={isJoining}
-																className="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+																className="flex-1 py-3 rounded-xl bg-[#0c8b96] text-white border border-white/20 font-medium hover:shadow-lg hover:shadow-gray-400/25 transition-all"
 															>
 																{isJoining ? (
 																	<span className="flex items-center justify-center gap-2">

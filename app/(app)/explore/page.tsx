@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "convex/react";
 import type React from "react";
 import { type ChangeEvent, useState } from "react";
 import BottomNav from "@/components/BottomNav";
-import Navbar from "@/components/Navbar";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/lib/auth-context";
@@ -1118,7 +1117,7 @@ export default function Explore() {
 								key={`people-step-${i}`}
 								className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
 									i <= currentStep
-										? "bg-gradient-to-r from-purple-500 to-cyan-500"
+										? "bg-[#0c8b96] border border-white/40"
 										: "bg-white/10"
 								}`}
 							/>
@@ -1189,7 +1188,7 @@ export default function Explore() {
 						disabled={isSubmitting}
 						className={`px-6 py-2.5 min-h-[44px] rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 							!isSubmitting
-								? "bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98]"
+								? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25 active:scale-[0.98]"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"
 						}`}
 					>
@@ -1219,7 +1218,7 @@ export default function Explore() {
 							key={`question-step-${i}`}
 							className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
 								i <= currentStep
-									? "bg-gradient-to-r from-purple-500 to-cyan-500"
+									? "bg-[#0c8b96] border border-white/40"
 									: "bg-white/10"
 							}`}
 						/>
@@ -1287,7 +1286,7 @@ export default function Explore() {
 						disabled={!canProceed()}
 						className={`px-6 py-2.5 min-h-[44px] rounded-xl font-medium transition-all duration-200 touch-manipulation active:scale-95 ${
 							canProceed()
-								? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/25"
+								? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25"
 								: "bg-white/10 text-gray-500 cursor-not-allowed"
 						}`}
 					>
@@ -1299,10 +1298,8 @@ export default function Explore() {
 	};
 
 	return (
-		<div className="min-h-screen bg-[#161621] text-white">
-			<Navbar />
-
-			<main className="max-w-6xl mx-auto px-4 pt-20 pb-24">
+		<div className="min-h-screen bg-transparent text-white">
+			<main className="max-w-6xl mx-auto px-4 pt-6 pb-24">
 				{/* Header */}
 				<header className="relative mb-8">
 					<div className="absolute -top-20 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />

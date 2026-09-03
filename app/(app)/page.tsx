@@ -2,6 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
 	type ReactNode,
@@ -10,6 +11,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { BlackHoleHeroSection } from "@/components/ui/blackhole-hero-section";
 import { useAuth } from "@/lib/auth-context";
 
 interface SphereRefsType {
@@ -107,74 +109,6 @@ function ConnectingStrings({
 	);
 }
 
-// Subtle animated sphere for hero section (less bright)
-// Only glows when cursor is near the center
-function HeroSphere({
-	color,
-	position,
-	onRef,
-}: {
-	color: string;
-	position: "top-left" | "bottom-right";
-	onRef?: (el: HTMLDivElement) => void;
-}) {
-	const sphereRef = useRef<HTMLDivElement>(null);
-	const [isNearCenter, setIsNearCenter] = useState(false);
-
-	const positionClasses = {
-		"top-left": "top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2",
-		"bottom-right": "bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2",
-	};
-
-	useEffect(() => {
-		if (sphereRef.current && onRef) {
-			onRef(sphereRef.current);
-		}
-	}, [onRef]);
-
-	useEffect(() => {
-		const handleMouseMove = (e: MouseEvent) => {
-			if (!sphereRef.current) return;
-
-			const rect = sphereRef.current.getBoundingClientRect();
-			const centerX = rect.left + rect.width / 2;
-			const centerY = rect.top + rect.height / 2;
-
-			const distance = Math.sqrt(
-				(e.clientX - centerX) ** 2 + (e.clientY - centerY) ** 2,
-			);
-
-			const triggerRadius = rect.width * 0.3;
-			setIsNearCenter(distance < triggerRadius);
-		};
-
-		window.addEventListener("mousemove", handleMouseMove);
-		return () => window.removeEventListener("mousemove", handleMouseMove);
-	}, []);
-
-	return (
-		<div
-			ref={sphereRef}
-			className={`absolute ${positionClasses[position]} w-72 h-72 lg:w-96 lg:h-96 pointer-events-none`}
-		>
-			<div
-				className={`absolute inset-0 rounded-full ${color} blur-3xl transition-all duration-1000 ease-out`}
-				style={{
-					opacity: isNearCenter ? 0.25 : 0.15,
-					transform: isNearCenter ? "scale(1.2)" : "scale(1)",
-				}}
-			/>
-			<div
-				className={`absolute inset-12 rounded-full ${color} blur-2xl transition-all duration-1000 ease-out`}
-				style={{
-					opacity: isNearCenter ? 0.2 : 0.1,
-					transform: isNearCenter ? "scale(1.15)" : "scale(1)",
-				}}
-			/>
-		</div>
-	);
-}
-
 // Animated blurred background sphere with hover effects
 // Only glows when cursor is near the center
 function AnimatedSphere({
@@ -265,6 +199,29 @@ interface Step {
 export default function Onboarding() {
 	const { user, isLoading } = useAuth();
 	const isAuthenticated = !isLoading && !!user;
+	const [navVisible, setNavVisible] = useState(true);
+
+	useEffect(() => {
+		let lastY = window.scrollY;
+		const onScroll = () => {
+			const y = window.scrollY;
+			const scrollingDown = y > lastY;
+			setNavVisible(!scrollingDown || y < 10);
+			lastY = y;
+		};
+		window.addEventListener("scroll", onScroll, { passive: true });
+		return () => window.removeEventListener("scroll", onScroll);
+	}, []);
+
+	// True while the viewport is narrow — drives the hero layout swap.
+	const [narrow, setNarrow] = useState(false);
+	useEffect(() => {
+		const m = window.matchMedia("(max-width: 767px)");
+		const sync = () => setNarrow(m.matches);
+		sync();
+		m.addEventListener("change", sync);
+		return () => m.removeEventListener("change", sync);
+	}, []);
 
 	// Refs for all spheres to track positions for connecting strings
 	const sphereRefs = useRef<SphereRefsType>({});
@@ -447,19 +404,29 @@ export default function Onboarding() {
 	];
 
 	return (
-		<div className="min-h-screen bg-[#161621] text-white relative">
+		<div className="min-h-screen bg-transparent text-white relative">
 			{/* Connecting strings between spheres */}
 			<ConnectingStrings sphereRefs={sphereRefs} />
 
-			<nav className="sticky top-0 z-50 bg-[#161621]/90 backdrop-blur-md border-b border-white/10">
+			<nav
+				className={`sticky top-0 z-50 bg-[#161621]/90 backdrop-blur-md border-b border-white/10 transition-transform duration-300 ${navVisible ? "translate-y-0" : "-translate-y-full"}`}
+			>
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="flex items-center justify-between h-16">
-						<span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-							SocialSphere
+					<div className="flex items-center justify-between h-20">
+						<span className="flex items-center gap-3">
+							<Image
+								src="/socialspherenow_logo.png"
+								alt="SocialSphere logo"
+								width={64}
+								height={64}
+								className="h-16 w-16 object-contain"
+								priority
+							/>
+							<span className="text-4xl font-bold text-white">SocialSphere</span>
 						</span>
 						<Link
 							href={buttonHref}
-							className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition-opacity"
+							className="px-5 py-2 rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium text-sm hover:opacity-90 transition-opacity"
 						>
 							{buttonText}
 						</Link>
@@ -467,41 +434,48 @@ export default function Onboarding() {
 				</div>
 			</nav>
 
-			<section className="relative px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-				<div className="absolute inset-0 overflow-hidden">
-					<HeroSphere
-						color="bg-purple-600"
-						position="top-left"
-						onRef={registerSphere("hero-1")}
-					/>
-					<HeroSphere
-						color="bg-cyan-600"
-						position="bottom-right"
-						onRef={registerSphere("hero-2")}
-					/>
-				</div>
-				<div className="relative max-w-4xl mx-auto text-center z-10">
-					<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-						A social app built for{" "}
-						<span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-							comfort
-						</span>
-						, not pressure.
-					</h1>
-					<p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10">
-						SocialSphere helps you find the right people for activities,
-						communities, and events — based on your interests and comfort level.
-					</p>
-					<Link
-						href={buttonHref}
-						className="group inline-flex items-center px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105"
-					>
-						Get Started
-						<span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">
-							→
-						</span>
-					</Link>
-				</div>
+			<section className="relative min-h-[92svh] w-full md:min-h-[720px]">
+				<BlackHoleHeroSection
+					focus={narrow ? [0.5, 0.72] : [0.74, 0.44]}
+					scrim={narrow ? "top" : "left"}
+					scrimStrength={0.9}
+					distance={24}
+					elevation={narrow ? -7 : -5.5}
+					glow={narrow ? 0.85 : 1}
+					steps={narrow ? 200 : 300}
+					resolution={narrow ? 0.6 : 0.7}
+				>
+					<div className="flex h-full min-h-[92svh] items-start px-6 pt-16 sm:px-10 md:min-h-[720px] md:items-center md:pt-0 lg:px-20">
+						<div className="max-w-[34rem]">
+							<h1 className="text-[2.5rem] font-light leading-[1.05] tracking-[-0.03em] text-white sm:text-6xl lg:text-[4.25rem]">
+								A social app built for{" "}
+								<span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+									comfort
+								</span>
+								, not pressure.
+							</h1>
+							<p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-white/60 md:mt-7">
+								SocialSphere helps you find the right people for activities,
+								communities, and events — based on your interests and comfort
+								level.
+							</p>
+							<div className="mt-8 flex flex-wrap items-center gap-3 md:mt-10">
+								<Link
+									href={buttonHref}
+									className="rounded-full bg-[#0c8b96] px-6 py-3 text-sm font-medium text-white border border-white/20 transition hover:opacity-90"
+								>
+									Get Started
+								</Link>
+								<a
+									href="#how-it-works"
+									className="rounded-full border border-white/20 px-6 py-3 text-sm text-white/80 transition hover:border-white/40 hover:text-white"
+								>
+									See how it works
+								</a>
+							</div>
+						</div>
+					</div>
+				</BlackHoleHeroSection>
 			</section>
 
 			<section className="px-4 sm:px-6 lg:px-8 py-20 relative z-10">
@@ -557,7 +531,10 @@ export default function Onboarding() {
 				</div>
 			</section>
 
-			<section className="px-4 sm:px-6 lg:px-8 py-20 bg-white/5 relative z-10">
+			<section
+				id="how-it-works"
+				className="scroll-mt-20 px-4 sm:px-6 lg:px-8 py-20 bg-white/5 relative z-10"
+			>
 				<div className="max-w-6xl mx-auto">
 					<div className="text-center mb-16">
 						<h2 className="text-3xl sm:text-4xl font-bold mb-4">
@@ -607,7 +584,7 @@ export default function Onboarding() {
 						</h2>
 						<Link
 							href={buttonHref}
-							className="group inline-flex items-center px-10 py-4 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105"
+							className="group inline-flex items-center px-10 py-4 rounded-full bg-[#0c8b96] text-white border border-white/20 font-semibold text-lg hover:shadow-lg hover:shadow-gray-400/25 transition-all duration-300 hover:scale-105"
 						>
 							Join SocialSphere
 							<span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">
@@ -618,7 +595,7 @@ export default function Onboarding() {
 				</div>
 			</section>
 
-			<footer className="px-4 sm:px-6 lg:px-8 py-8 border-t border-white/10 relative z-10">
+			<footer className="px-4 sm:px-6 lg:px-8 py-8 glass-solid rounded-none border-t border-white/10 relative z-10">
 				<div className="max-w-6xl mx-auto text-center text-gray-500 text-sm">
 					<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent font-medium">
 						SocialSphere

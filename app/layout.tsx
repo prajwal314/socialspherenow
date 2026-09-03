@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
+import AnoAI from "@/components/ui/animated-shader-background";
 
 export const metadata: Metadata = {
 	title: "SocialSphere - Connect Comfortably",
@@ -16,9 +17,12 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className="bg-[#161621] text-white antialiased"
+				className="bg-black text-white antialiased"
 				suppressHydrationWarning
 			>
+				<div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+					<AnoAI />
+				</div>
 				<ConvexClientProvider>{children}</ConvexClientProvider>
 			</body>
 		</html>

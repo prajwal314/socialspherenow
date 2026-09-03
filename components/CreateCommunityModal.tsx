@@ -179,7 +179,7 @@ export default function CreateCommunityModal({
 			/>
 			<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 				<div className="min-h-full flex items-center justify-center p-4 py-8">
-					<div className="w-full max-w-lg rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
+					<div className="w-full max-w-lg rounded-3xl glass-strong glass-shine border border-white/10 shadow-2xl pointer-events-auto">
 						{/* Header */}
 						<div className="px-6 py-5 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#1e1e2e] rounded-t-3xl z-10">
 							<div>
@@ -293,7 +293,7 @@ export default function CreateCommunityModal({
 										disabled={!isStep1Valid || !canCreateMore}
 										className={`w-full py-3.5 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 											isStep1Valid && canCreateMore
-												? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25 active:scale-[0.98]"
+												? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25 active:scale-[0.98]"
 												: "bg-white/10 text-gray-500 cursor-not-allowed"
 										}`}
 									>
@@ -455,7 +455,7 @@ export default function CreateCommunityModal({
 											disabled={!isStep2Valid || isCreating || !canCreateMore}
 											className={`flex-1 py-3 rounded-xl font-medium transition-all duration-200 touch-manipulation ${
 												isStep2Valid && !isCreating && canCreateMore
-													? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25 active:scale-[0.98]"
+													? "bg-[#0c8b96] text-white border border-white/20 hover:shadow-lg hover:shadow-gray-400/25 active:scale-[0.98]"
 													: "bg-white/10 text-gray-500 cursor-not-allowed"
 											}`}
 										>

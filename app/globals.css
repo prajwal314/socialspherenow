@@ -1,4 +1,71 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@layer utilities {
+	.glass {
+		background: rgba(255, 255, 255, 0.06);
+		backdrop-filter: blur(16px) saturate(160%);
+		-webkit-backdrop-filter: blur(16px) saturate(160%);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.35),
+			inset 0 1px 0 rgba(255, 255, 255, 0.08);
+	}
+	.glass-strong {
+		background: rgba(255, 255, 255, 0.08);
+		backdrop-filter: blur(20px) saturate(180%);
+		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		box-shadow:
+			0 16px 48px rgba(0, 0, 0, 0.45),
+			inset 0 1px 0 rgba(255, 255, 255, 0.12);
+	}
+	.glass-solid {
+		background: rgba(18, 18, 28, 0.75);
+		backdrop-filter: blur(16px) saturate(160%);
+		-webkit-backdrop-filter: blur(16px) saturate(160%);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+	}
+	.glass-shine {
+		position: relative;
+		overflow: hidden;
+	}
+	.glass-shine::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			105deg,
+			transparent 35%,
+			rgba(255, 255, 255, 0.07) 50%,
+			transparent 65%
+		);
+		pointer-events: none;
+	}
+	.glass-shine::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: linear-gradient(
+			180deg,
+			rgba(255, 255, 255, 0.08) 0%,
+			transparent 35%
+		);
+		pointer-events: none;
+	}
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-10px);
+	}
+}
 
 /* ============================================
    MOBILE TOUCH RESPONSIVENESS FIXES
@@ -13,10 +80,10 @@ input[type="button"],
 select,
 label[for],
 .cursor-pointer {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  user-select: none;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	user-select: none;
 }
 
 /* Ensure text inputs allow proper touch interaction */
@@ -28,42 +95,42 @@ input[type="tel"],
 input[type="url"],
 input[type="number"],
 textarea {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  font-size: 16px; /* Prevents iOS zoom on focus */
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	font-size: 16px; /* Prevents iOS zoom on focus */
 }
 
 /* Minimum touch target sizes for mobile accessibility (44x44px) */
 @media (max-width: 768px) {
-  button:not([class*="w-"]):not([class*="h-"]),
-  a:not([class*="w-"]):not([class*="h-"]),
-  [role="button"]:not([class*="w-"]):not([class*="h-"]) {
-    min-height: 44px;
-    min-width: 44px;
-  }
+	button:not([class*="w-"]):not([class*="h-"]),
+	a:not([class*="w-"]):not([class*="h-"]),
+	[role="button"]:not([class*="w-"]):not([class*="h-"]) {
+		min-height: 44px;
+		min-width: 44px;
+	}
 }
 
 /* Ensure modals work properly on mobile */
 .modal-overlay {
-  -webkit-overflow-scrolling: touch;
+	-webkit-overflow-scrolling: touch;
 }
 
 /* Fix for iOS Safari delayed clicks */
 * {
-  -webkit-tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
 }
 
 /* Prevent text selection on buttons during touch */
 button,
 [role="button"] {
-  -webkit-user-select: none;
-  user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 /* Ensure fixed positioned elements work correctly on mobile */
 .fixed {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 /* Improve touch scrolling in scrollable containers */
@@ -73,12 +140,12 @@ button,
 .overflow-scroll,
 .overflow-y-scroll,
 .overflow-x-scroll {
-  -webkit-overflow-scrolling: touch;
+	-webkit-overflow-scrolling: touch;
 }
 
 /* Touch manipulation utility class */
 .touch-manipulation {
-  touch-action: manipulation;
+	touch-action: manipulation;
 }
 
 /* Prevent double-tap zoom on interactive elements */
@@ -88,5 +155,5 @@ input,
 select,
 textarea,
 [role="button"] {
-  touch-action: manipulation;
+	touch-action: manipulation;
 }

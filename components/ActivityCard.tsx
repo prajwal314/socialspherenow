@@ -34,16 +34,16 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
 	};
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm p-4">
+		<div className="glass glass-shine rounded-2xl p-4">
 			<div className="flex items-start">
 				<span className="text-xl mr-3">{getActivityIcon(type)}</span>
 				<div className="flex-1">
-					<p className="text-sm">
-						<span className="font-semibold">{user?.name || "Someone"}</span>{" "}
+					<p className="text-sm text-white/90">
+						<span className="font-semibold text-white">{user?.name || "Someone"}</span>{" "}
 						{content || "performed an action"}
 					</p>
 					{timestamp && (
-						<p className="text-xs text-gray-400 mt-1">
+						<p className="text-xs text-white/40 mt-1">
 							{new Date(timestamp).toLocaleDateString("en-US", {
 								month: "short",
 								day: "numeric",

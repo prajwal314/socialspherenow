@@ -21,7 +21,7 @@ export default function CommunityCard({
 	const { name, description, memberCount, imageUrl, isJoined } = community;
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm p-4">
+		<div className="glass glass-shine rounded-2xl p-4">
 			<div className="flex items-start">
 				{imageUrl ? (
 					<img
@@ -35,12 +35,12 @@ export default function CommunityCard({
 					</div>
 				)}
 				<div className="flex-1 ml-3">
-					<h3 className="font-semibold">{name ?? "Unnamed Community"}</h3>
+					<h3 className="font-semibold text-white">{name ?? "Unnamed Community"}</h3>
 					{description && (
-						<p className="text-sm text-gray-500 line-clamp-2">{description}</p>
+						<p className="text-sm text-white/60 line-clamp-2">{description}</p>
 					)}
 					{memberCount !== undefined && (
-						<p className="text-xs text-gray-400 mt-1">{memberCount} members</p>
+						<p className="text-xs text-white/40 mt-1">{memberCount} members</p>
 					)}
 				</div>
 				{onJoin && (
@@ -48,7 +48,7 @@ export default function CommunityCard({
 						type="button"
 						onClick={() => onJoin(community)}
 						className={`px-4 py-1.5 min-h-[44px] rounded-full text-sm font-medium touch-manipulation active:scale-95 transition-transform ${
-							isJoined ? "bg-gray-100 text-gray-600" : "bg-blue-600 text-white"
+							isJoined ? "bg-gray-100 text-gray-600" : "bg-[#0c8b96] text-white border border-white/20"
 						}`}
 					>
 						{isJoined ? "Joined" : "Join"}
