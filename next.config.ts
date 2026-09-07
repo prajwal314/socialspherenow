@@ -1,23 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-	// Disable ESLint during build (using Biome instead)
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
-	// Disable TypeScript errors during build for now (fix incrementally)
-	typescript: {
-		ignoreBuildErrors: true,
-	},
-	// Image optimization domains if needed
+	compress: true,
+	eslint: { ignoreDuringBuilds: true },
+	typescript: { ignoreBuildErrors: true },
+	poweredByHeader: false,
 	images: {
-		remotePatterns: [
-			{
-				protocol: "https",
-				hostname: "**",
-			},
-		],
+		formats: ["image/avif", "image/webp"],
+		remotePatterns: [{ protocol: "https", hostname: "**" }],
 	},
+	experimental: { optimizePackageImports: ["three", "lucide-react"] },
 };
 
 export default nextConfig;

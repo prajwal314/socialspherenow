@@ -17,15 +17,17 @@ export default function EventCard({ event }: EventCardProps) {
 	const { title, date, location, imageUrl, attendees } = event || {};
 
 	return (
-		<div className="glass glass-shine rounded-2xl overflow-hidden">
+		<div className="glass glass-shine rounded-2xl overflow-hidden flex flex-col">
 			{imageUrl && (
-				<img
-					src={imageUrl}
-					alt={title || "Event"}
-					className="w-full h-40 object-cover"
-				/>
+				<div className="w-full h-40 shrink-0 overflow-hidden bg-white/5">
+					<img
+						src={imageUrl}
+						alt={title || "Event"}
+						className="w-full h-full object-cover block"
+					/>
+				</div>
 			)}
-			<div className="p-4">
+			<div className="p-4 flex-1">
 				<h3 className="font-semibold text-lg mb-1 text-white">
 					{title || "Untitled Event"}
 				</h3>

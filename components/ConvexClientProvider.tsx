@@ -30,25 +30,11 @@ function useAuthFromAuthKit() {
 	const [retryCount, setRetryCount] = useState(0);
 	const maxRetries = 3;
 
-	// Log token errors for debugging
 	useEffect(() => {
-		if (tokenError) {
+		if (tokenError && process.env.NODE_ENV !== "production") {
 			console.error("[ConvexClientProvider] Token error:", tokenError);
 		}
 	}, [tokenError]);
-
-	// Log authentication state for debugging
-	useEffect(() => {
-		console.log("[ConvexClientProvider] Auth state:", {
-			hasUser: !!user,
-			userId: user?.id,
-			hasAccessToken: !!accessToken,
-			isLoading,
-			tokenLoading,
-			tokenError: tokenError?.message,
-			retryCount,
-		});
-	}, [user, accessToken, isLoading, tokenLoading, tokenError, retryCount]);
 
 	const loading = (isLoading ?? false) || (tokenLoading ?? false);
 	

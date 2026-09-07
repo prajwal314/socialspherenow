@@ -414,10 +414,10 @@ export default function Home() {
 	const isLoading = currentUser === undefined;
 
 	return (
-		<div className="min-h-screen bg-transparent text-white overflow-x-hidden">
+		<div className="min-h-screen bg-transparent text-white">
 			<Navbar />
 
-			<main className="max-w-6xl mx-auto px-3 sm:px-4 pt-6 sm:pt-20 pb-24">
+			<main className="max-w-6xl mx-auto px-4 pt-20 pb-24">
 				{/* Header with gradient background glow */}
 				<header className="relative mb-8">
 					<div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -721,20 +721,22 @@ export default function Home() {
 							{liveEvents.map((event) => (
 								<div
 									key={event._id}
-									className="group rounded-2xl bg-[#1e1e2e] border border-white/10 hover:border-purple-500/30 transition-all duration-300 overflow-hidden"
+									className="group flex flex-col rounded-2xl bg-[#1e1e2e] border border-white/10 hover:border-purple-500/30 transition-all duration-300 overflow-hidden"
 								>
-									{/* Event Image */}
+									{/* Event Image - always on top */}
 									{event.imageUrl && (
-										<div className="w-full h-36 bg-white/5">
+										<div className="w-full h-44 sm:h-36 shrink-0 overflow-hidden bg-white/5">
 											<img
 												src={event.imageUrl}
 												alt={event.title}
-												className="w-full h-full object-cover"
+												loading="lazy"
+												decoding="async"
+												className="w-full h-full object-cover block"
 											/>
 										</div>
 									)}
 
-									<div className="p-5">
+									<div className="p-5 flex-1 flex flex-col">
 										<div className="flex items-start justify-between mb-3">
 											<span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-medium flex items-center gap-1.5">
 												🎯{event.activity}
@@ -957,7 +959,7 @@ export default function Home() {
 			</main>
 
 			{/* Floating Action Buttons */}
-			<div className="fixed bottom-20 sm:bottom-24 right-3 sm:right-6 flex flex-col gap-2 sm:gap-3 z-40 max-w-[calc(100vw-1.5rem)]">
+			<div className="fixed bottom-24 right-6 flex flex-col gap-3 z-40">
 				{/* Create Community Button */}
 				<button
 					type="button"
@@ -1305,16 +1307,18 @@ export default function Home() {
 					/>
 					<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
-							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
+							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto overflow-hidden flex flex-col">
 								{eventDetails ? (
 									<>
-										{/* Event Image */}
+										{/* Event Image - fully visible, not cropped, text strictly below */}
 										{eventDetails.imageUrl && (
-											<div className="w-full h-48 bg-white/5">
+											<div className="w-full shrink-0 overflow-hidden bg-black/20 flex items-center justify-center">
 												<img
 													src={eventDetails.imageUrl}
 													alt={eventDetails.title}
-													className="w-full h-full object-cover"
+													loading="lazy"
+													decoding="async"
+													className="w-full h-auto max-h-[42vh] object-contain block"
 												/>
 											</div>
 										)}

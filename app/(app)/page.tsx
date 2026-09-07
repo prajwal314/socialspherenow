@@ -2,6 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
+import nextDynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,8 +13,9 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { BlackHoleHeroSection } from "@/components/ui/blackhole-hero-section";
 import { useAuth } from "@/lib/auth-context";
+
+const BlackHoleHeroSection = nextDynamic(() => import("@/components/ui/blackhole-hero-section").then((m) => m.BlackHoleHeroSection), { ssr: false, loading: () => <div className="absolute inset-0 bg-black" /> });
 
 interface SphereRefsType {
 	[key: string]: HTMLDivElement | null;
@@ -70,14 +72,22 @@ function ConnectingStrings({
 
 		updateLines();
 
-		window.addEventListener("scroll", updateLines);
-		window.addEventListener("resize", updateLines);
-		const interval = setInterval(updateLines, 100);
+		let ticking = false;
+		const onScroll = () => {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(() => { updateLines(); ticking = false; });
+			}
+		};
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
+		const ro = new ResizeObserver(onScroll);
+		Object.values(sphereRefs.current ?? {}).forEach((el) => el && ro.observe(el));
 
 		return () => {
-			window.removeEventListener("scroll", updateLines);
-			window.removeEventListener("resize", updateLines);
-			clearInterval(interval);
+			window.removeEventListener("scroll", onScroll);
+			window.removeEventListener("resize", onScroll);
+			ro.disconnect();
 		};
 	}, [sphereRefs]);
 
@@ -136,23 +146,11 @@ function AnimatedSphere({
 	}, [onRef]);
 
 	useEffect(() => {
-		const handleMouseMove = (e: MouseEvent) => {
-			if (!sphereRef.current) return;
-
-			const rect = sphereRef.current.getBoundingClientRect();
-			const centerX = rect.left + rect.width / 2;
-			const centerY = rect.top + rect.height / 2;
-
-			const distance = Math.sqrt(
-				(e.clientX - centerX) ** 2 + (e.clientY - centerY) ** 2,
-			);
-
-			const triggerRadius = rect.width * 0.35;
-			setIsNearCenter(distance < triggerRadius);
-		};
-
-		window.addEventListener("mousemove", handleMouseMove);
-		return () => window.removeEventListener("mousemove", handleMouseMove);
+		let raf = 0;
+		let lastX = 0, lastY = 0;
+		const handleMouseMove = (e: MouseEvent) => { lastX = e.clientX; lastY = e.clientY; if (raf) return; raf = requestAnimationFrame(() => { raf = 0; if (!sphereRef.current) return; const r = sphereRef.current.getBoundingClientRect(); const dx = lastX - (r.left + r.width / 2); const dy = lastY - (r.top + r.height / 2); setIsNearCenter(Math.hypot(dx, dy) < r.width * 0.35); }); };
+		window.addEventListener("mousemove", handleMouseMove, { passive: true });
+		return () => { window.removeEventListener("mousemove", handleMouseMove); cancelAnimationFrame(raf); };
 	}, []);
 
 	return (
@@ -447,9 +445,9 @@ export default function Onboarding() {
 					scrimStrength={0.9}
 					distance={24}
 					elevation={narrow ? -7 : -5.5}
-					glow={narrow ? 0.85 : 1}
-					steps={narrow ? 200 : 300}
-					resolution={narrow ? 0.6 : 0.7}
+					glow={narrow ? 0.6 : 0.75}
+					steps={narrow ? 110 : 160}
+					resolution={narrow ? 0.45 : 0.5}
 				>
 					<div className="flex h-full min-h-[92svh] items-start px-4 xs:px-5 sm:px-10 pt-10 xs:pt-14 sm:pt-16 md:min-h-[720px] md:items-center md:pt-0 lg:px-20">
 						<div className="w-full max-w-[34rem] min-w-0">
