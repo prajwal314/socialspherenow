@@ -23,18 +23,18 @@ export default function Navbar() {
 		<nav
 			className={`sticky top-0 z-50 glass-solid rounded-none border-b border-white/10 transition-transform duration-300 ${visible ? "translate-y-0" : "-translate-y-full"}`}
 		>
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex items-center justify-between h-20">
-					<Link href="/home" className="flex items-center gap-3">
+			<div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+				<div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
+					<Link href="/home" className="flex items-center gap-2 sm:gap-3">
 						<Image
 							src="/socialspherenow_logo.png"
 							alt="SocialSphere logo"
 							width={64}
 							height={64}
-							className="h-16 w-16 object-contain"
+							className="h-8 w-8 sm:h-10 sm:w-10 md:h-16 md:w-16 object-contain shrink-0"
 							priority
 						/>
-						<span className="text-4xl font-bold text-white">SocialSphere</span>
+						<span className="text-lg sm:text-2xl md:text-4xl font-bold text-white truncate">SocialSphere</span>
 					</Link>
 					<div className="flex items-center space-x-4">
 						{/* Additional nav items can go here */}

@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 		"A social app built for comfort, not pressure. Find the right people for activities, communities, and events.",
 };
 
+export const viewport = {
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 5,
+};
+
 export default function RootLayout({
 	children,
 }: {
@@ -17,7 +23,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className="bg-black text-white antialiased"
+				className="bg-black text-white antialiased overflow-x-hidden"
 				suppressHydrationWarning
 			>
 				<div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">

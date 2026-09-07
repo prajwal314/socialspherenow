@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
 	type ReactNode,
 	type RefObject,
@@ -83,7 +84,7 @@ function ConnectingStrings({
 	return (
 		<svg
 			ref={svgRef}
-			className="absolute top-0 left-0 w-full pointer-events-none z-0"
+			className="hidden lg:block absolute top-0 left-0 w-full pointer-events-none z-0"
 			style={{ height: "100%", minHeight: "100vh" }}
 		>
 			<defs>
@@ -124,8 +125,8 @@ function AnimatedSphere({
 	const [isNearCenter, setIsNearCenter] = useState(false);
 
 	const positionClasses = {
-		right: "right-0 lg:-right-20 xl:-right-32",
-		left: "left-0 lg:-left-20 xl:-left-32",
+		right: "right-1/2 translate-x-1/2 sm:right-0 sm:translate-x-0 lg:-right-20 xl:-right-32",
+		left: "left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 lg:-left-20 xl:-left-32",
 	};
 
 	useEffect(() => {
@@ -157,7 +158,7 @@ function AnimatedSphere({
 	return (
 		<div
 			ref={sphereRef}
-			className={`absolute top-1/2 -translate-y-1/2 ${positionClasses[position]} w-64 h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 pointer-events-none z-0`}
+			className={`absolute top-1/2 -translate-y-1/2 ${positionClasses[position]} w-44 h-44 xs:w-56 xs:h-56 sm:w-64 sm:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 pointer-events-none z-0 overflow-hidden sm:overflow-visible`}
 		>
 			<div
 				className={`absolute inset-0 rounded-full bg-gradient-to-br ${gradient} blur-3xl transition-all duration-700 ease-out`}
@@ -198,8 +199,13 @@ interface Step {
 
 export default function Onboarding() {
 	const { user, isLoading } = useAuth();
+	const router = useRouter();
 	const isAuthenticated = !isLoading && !!user;
 	const [navVisible, setNavVisible] = useState(true);
+
+	useEffect(() => {
+		if (!isLoading && user) router.replace("/home");
+	}, [user, isLoading, router]);
 
 	useEffect(() => {
 		let lastY = window.scrollY;
@@ -404,29 +410,29 @@ export default function Onboarding() {
 	];
 
 	return (
-		<div className="min-h-screen bg-transparent text-white relative">
+		<div className="min-h-screen bg-transparent text-white relative overflow-x-hidden w-full">
 			{/* Connecting strings between spheres */}
 			<ConnectingStrings sphereRefs={sphereRefs} />
 
 			<nav
 				className={`sticky top-0 z-50 bg-[#161621]/90 backdrop-blur-md border-b border-white/10 transition-transform duration-300 ${navVisible ? "translate-y-0" : "-translate-y-full"}`}
 			>
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="flex items-center justify-between h-20">
-						<span className="flex items-center gap-3">
+				<div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+					<div className="flex items-center justify-between h-14 sm:h-16 md:h-20 gap-2">
+						<span className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
 							<Image
 								src="/socialspherenow_logo.png"
 								alt="SocialSphere logo"
 								width={64}
 								height={64}
-								className="h-16 w-16 object-contain"
+								className="h-8 w-8 sm:h-10 sm:w-10 md:h-16 md:w-16 object-contain shrink-0"
 								priority
 							/>
-							<span className="text-4xl font-bold text-white">SocialSphere</span>
+							<span className="text-base xs:text-lg sm:text-2xl md:text-4xl font-bold text-white truncate">SocialSphere</span>
 						</span>
 						<Link
 							href={buttonHref}
-							className="px-5 py-2 rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium text-sm hover:opacity-90 transition-opacity"
+							className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium text-xs sm:text-sm hover:opacity-90 transition-opacity shrink-0 whitespace-nowrap leading-none"
 						>
 							{buttonText}
 						</Link>
@@ -434,7 +440,7 @@ export default function Onboarding() {
 				</div>
 			</nav>
 
-			<section className="relative min-h-[92svh] w-full md:min-h-[720px]">
+			<section className="relative min-h-[92svh] w-full md:min-h-[720px] overflow-hidden">
 				<BlackHoleHeroSection
 					focus={narrow ? [0.5, 0.72] : [0.74, 0.44]}
 					scrim={narrow ? "top" : "left"}
@@ -445,30 +451,30 @@ export default function Onboarding() {
 					steps={narrow ? 200 : 300}
 					resolution={narrow ? 0.6 : 0.7}
 				>
-					<div className="flex h-full min-h-[92svh] items-start px-6 pt-16 sm:px-10 md:min-h-[720px] md:items-center md:pt-0 lg:px-20">
-						<div className="max-w-[34rem]">
-							<h1 className="text-[2.5rem] font-light leading-[1.05] tracking-[-0.03em] text-white sm:text-6xl lg:text-[4.25rem]">
+					<div className="flex h-full min-h-[92svh] items-start px-4 xs:px-5 sm:px-10 pt-10 xs:pt-14 sm:pt-16 md:min-h-[720px] md:items-center md:pt-0 lg:px-20">
+						<div className="w-full max-w-[34rem] min-w-0">
+							<h1 className="text-[1.85rem] xs:text-[2.1rem] sm:text-5xl lg:text-[4.25rem] font-light leading-[1.05] tracking-[-0.03em] text-white break-words">
 								A social app built for{" "}
 								<span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
 									comfort
 								</span>
 								, not pressure.
 							</h1>
-							<p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-white/60 md:mt-7">
+							<p className="mt-4 sm:mt-6 max-w-md text-sm sm:text-[0.95rem] leading-relaxed text-white/70 break-words">
 								SocialSphere helps you find the right people for activities,
 								communities, and events — based on your interests and comfort
 								level.
 							</p>
-							<div className="mt-8 flex flex-wrap items-center gap-3 md:mt-10">
+							<div className="mt-6 sm:mt-8 flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 md:mt-10">
 								<Link
 									href={buttonHref}
-									className="rounded-full bg-[#0c8b96] px-6 py-3 text-sm font-medium text-white border border-white/20 transition hover:opacity-90"
+									className="inline-flex justify-center rounded-full bg-[#0c8b96] px-6 py-3.5 text-sm font-medium text-white border border-white/20 transition hover:opacity-90 text-center"
 								>
 									Get Started
 								</Link>
 								<a
 									href="#how-it-works"
-									className="rounded-full border border-white/20 px-6 py-3 text-sm text-white/80 transition hover:border-white/40 hover:text-white"
+									className="inline-flex justify-center rounded-full border border-white/20 px-6 py-3.5 text-sm text-white/80 transition hover:border-white/40 hover:text-white text-center"
 								>
 									See how it works
 								</a>
@@ -478,26 +484,26 @@ export default function Onboarding() {
 				</BlackHoleHeroSection>
 			</section>
 
-			<section className="px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-				<div className="max-w-6xl mx-auto">
-					<div className="text-center mb-16">
-						<h2 className="text-3xl sm:text-4xl font-bold mb-4">
+			<section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 relative z-10 overflow-hidden">
+				<div className="w-full max-w-6xl mx-auto">
+					<div className="text-center mb-10 sm:mb-12 lg:mb-16 px-1">
+						<h2 className="text-[1.7rem] xs:text-2xl sm:text-4xl font-bold mb-3 sm:mb-4 leading-tight break-words">
 							Everything you need to{" "}
 							<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
 								connect comfortably
 							</span>
 						</h2>
-						<p className="text-gray-400 max-w-xl mx-auto">
+						<p className="text-gray-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
 							Designed for people who want meaningful connections without the
 							social anxiety.
 						</p>
 					</div>
 
-					<div className="space-y-12 lg:space-y-20">
+					<div className="space-y-8 sm:space-y-10 lg:space-y-20">
 						{features.map((feature, index) => (
 							<div
 								key={feature.title}
-								className={`relative flex flex-col ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} items-center gap-8 lg:gap-16`}
+								className={`relative flex flex-col ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} items-center gap-6 sm:gap-8 lg:gap-16 overflow-hidden lg:overflow-visible rounded-3xl lg:rounded-none`}
 							>
 								{/* Background blurred sphere */}
 								<AnimatedSphere
@@ -506,17 +512,17 @@ export default function Onboarding() {
 									onRef={registerSphere(`feature-${index}`)}
 								/>
 
-								<div className="flex-1 w-full relative z-10">
-									<div className="relative p-8 rounded-3xl bg-[#1e1e2e]/80 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 group">
+								<div className="flex-1 w-full min-w-0 relative z-10">
+									<div className="relative p-5 sm:p-6 lg:p-8 rounded-3xl bg-[#1e1e2e]/80 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 group overflow-hidden">
 										<div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-										<div className="relative">
-											<div className="mb-6 inline-block p-3 rounded-2xl bg-white/10">
+										<div className="relative min-w-0">
+											<div className="mb-4 sm:mb-6 inline-flex p-2.5 sm:p-3 rounded-2xl bg-white/10">
 												{feature.icon}
 											</div>
-											<h3 className="text-2xl font-bold mb-4">
+											<h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4 leading-tight break-words">
 												{feature.title}
 											</h3>
-											<p className="text-gray-300 leading-relaxed">
+											<p className="text-gray-300 leading-relaxed text-sm sm:text-base break-words">
 												{feature.description}
 											</p>
 										</div>
@@ -533,35 +539,35 @@ export default function Onboarding() {
 
 			<section
 				id="how-it-works"
-				className="scroll-mt-20 px-4 sm:px-6 lg:px-8 py-20 bg-white/5 relative z-10"
+				className="scroll-mt-20 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 bg-white/5 relative z-10 overflow-hidden"
 			>
-				<div className="max-w-6xl mx-auto">
-					<div className="text-center mb-16">
-						<h2 className="text-3xl sm:text-4xl font-bold mb-4">
+				<div className="w-full max-w-6xl mx-auto">
+					<div className="text-center mb-10 sm:mb-12 lg:mb-16 px-1">
+						<h2 className="text-[1.7rem] xs:text-2xl sm:text-4xl font-bold mb-3 sm:mb-4 break-words">
 							How it{" "}
 							<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
 								works
 							</span>
 						</h2>
-						<p className="text-gray-400">
+						<p className="text-gray-400 text-sm sm:text-base">
 							Three simple steps to meaningful connections
 						</p>
 					</div>
 
-					<div className="flex flex-col lg:flex-row gap-8">
+					<div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
 						{steps.map((step, index) => (
-							<div key={step.number} className="flex-1 relative">
+							<div key={step.number} className="flex-1 relative min-w-0">
 								{index < steps.length - 1 && (
 									<div className="hidden lg:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-transparent -translate-x-1/2" />
 								)}
-								<div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 h-full">
-									<span className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+								<div className="p-5 sm:p-6 lg:p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 h-full">
+									<span className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
 										{step.number}
 									</span>
-									<h3 className="text-xl font-semibold mt-4 mb-2">
+									<h3 className="text-lg sm:text-xl font-semibold mt-3 sm:mt-4 mb-1 sm:mb-2 leading-tight break-words">
 										{step.title}
 									</h3>
-									<p className="text-gray-400">{step.description}</p>
+									<p className="text-gray-400 text-sm sm:text-base leading-relaxed break-words">{step.description}</p>
 								</div>
 							</div>
 						))}
@@ -569,13 +575,13 @@ export default function Onboarding() {
 				</div>
 			</section>
 
-			<section className="px-4 sm:px-6 lg:px-8 py-20 lg:py-32 relative z-10">
+			<section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-32 relative z-10 overflow-hidden">
 				<div className="relative w-full h-full">
-					<div className="absolute inset-0 overflow-hidden">
-						<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-purple-500/30 to-cyan-500/30 rounded-full blur-3xl" />
+					<div className="absolute inset-0 overflow-hidden pointer-events-none">
+						<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] sm:w-[90vw] max-w-[700px] h-[85vw] sm:h-[90vw] max-h-[700px] bg-gradient-to-r from-purple-500/30 to-cyan-500/30 rounded-full blur-3xl" />
 					</div>
-					<div className="relative max-w-4xl mx-auto text-center">
-						<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8">
+					<div className="relative w-full max-w-4xl mx-auto text-center px-1 sm:px-2">
+						<h2 className="text-[1.6rem] xs:text-2xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 leading-tight break-words">
 							Social life shouldn&apos;t feel{" "}
 							<span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
 								difficult
@@ -584,7 +590,7 @@ export default function Onboarding() {
 						</h2>
 						<Link
 							href={buttonHref}
-							className="group inline-flex items-center px-10 py-4 rounded-full bg-[#0c8b96] text-white border border-white/20 font-semibold text-lg hover:shadow-lg hover:shadow-gray-400/25 transition-all duration-300 hover:scale-105"
+							className="group inline-flex items-center justify-center w-full xs:w-auto px-6 sm:px-10 py-3.5 sm:py-4 rounded-full bg-[#0c8b96] text-white border border-white/20 font-semibold text-base sm:text-lg hover:shadow-lg hover:shadow-gray-400/25 transition-all duration-300 hover:scale-[1.02] sm:hover:scale-105 max-w-full"
 						>
 							Join SocialSphere
 							<span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">
@@ -595,7 +601,7 @@ export default function Onboarding() {
 				</div>
 			</section>
 
-			<footer className="px-4 sm:px-6 lg:px-8 py-8 glass-solid rounded-none border-t border-white/10 relative z-10">
+			<footer className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 glass-solid rounded-none border-t border-white/10 relative z-10 overflow-hidden">
 				<div className="max-w-6xl mx-auto text-center text-gray-500 text-sm">
 					<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent font-medium">
 						SocialSphere

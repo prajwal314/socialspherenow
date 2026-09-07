@@ -157,3 +157,14 @@ textarea,
 [role="button"] {
 	touch-action: manipulation;
 }
+
+html {
+	overflow-x: hidden;
+}
+body {
+	overflow-x: hidden;
+}
+img {
+	max-width: 100%;
+	height: auto;
+}

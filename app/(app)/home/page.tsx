@@ -414,10 +414,10 @@ export default function Home() {
 	const isLoading = currentUser === undefined;
 
 	return (
-		<div className="min-h-screen bg-transparent text-white">
+		<div className="min-h-screen bg-transparent text-white overflow-x-hidden">
 			<Navbar />
 
-			<main className="max-w-6xl mx-auto px-4 pt-20 pb-24">
+			<main className="max-w-6xl mx-auto px-3 sm:px-4 pt-6 sm:pt-20 pb-24">
 				{/* Header with gradient background glow */}
 				<header className="relative mb-8">
 					<div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -957,7 +957,7 @@ export default function Home() {
 			</main>
 
 			{/* Floating Action Buttons */}
-			<div className="fixed bottom-24 right-6 flex flex-col gap-3 z-40">
+			<div className="fixed bottom-20 sm:bottom-24 right-3 sm:right-6 flex flex-col gap-2 sm:gap-3 z-40 max-w-[calc(100vw-1.5rem)]">
 				{/* Create Community Button */}
 				<button
 					type="button"
