@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { searchMatchesUser, usersAreCompatible } from "./matching";
 
 // Create an activity search (for partner matching)
 export const createActivitySearch = mutation({
@@ -199,17 +200,34 @@ export const createActivitySearchAndMatch = mutation({
 			)
 			.filter((q) => q.eq(q.field("isActive"), true))
 			.collect();
+		const currentUser = await ctx.db
+			.query("users")
+			.withIndex("by_workos_id", (q) => q.eq("workosId", args.userId))
+			.first();
+
+		if (!currentUser) {
+			throw new Error("User not found");
+		}
 
 		// Filter out current user and check for compatibility
-		// For activity-specific matching, we check if preferences have any overlap
-		const compatibleMatches = matchingSearches.filter((search) => {
-			// Exclude self
-			if (search.userId === args.userId) return false;
-
-			// Basic compatibility: same activity type means potential match
-			// More sophisticated matching can be added based on specific preference fields
-			return true;
-		});
+		const compatibleMatches = [];
+		const currentSearch = {
+			userId: args.userId,
+			activityType: args.activityType,
+			preferences: args.preferences,
+		};
+		for (const search of matchingSearches) {
+			const matchUser = await ctx.db
+				.query("users")
+				.withIndex("by_workos_id", (q) => q.eq("workosId", search.userId))
+				.first();
+			if (
+				matchUser &&
+				usersAreCompatible(currentUser, matchUser, currentSearch, search)
+			) {
+				compatibleMatches.push(search);
+			}
+		}
 
 		// 4. Create connection requests for each match (limit to 5 to avoid spam)
 		const matchLimit = 5;
@@ -291,16 +309,28 @@ export const getAllActiveSearches = query({
 			.withIndex("by_is_active", (q) => q.eq("isActive", true))
 			.order("desc")
 			.collect();
+		const currentUser = await ctx.db
+			.query("users")
+			.withIndex("by_workos_id", (q) => q.eq("workosId", args.excludeUserId))
+			.first();
 
-		// Exclude current user's searches and get user details
+		if (!currentUser) return [];
+
+		// Exclude incompatible searches and get user details
 		const searchesWithUser = await Promise.all(
-			allActive
-				.filter((search) => search.userId !== args.excludeUserId)
-				.map(async (search) => {
+			allActive.map(async (search) => {
 					const user = await ctx.db
 						.query("users")
 						.withIndex("by_workos_id", (q) => q.eq("workosId", search.userId))
 						.first();
+
+					if (
+						!user ||
+						!searchMatchesUser(search, currentUser) ||
+						!usersAreCompatible(currentUser, user, search)
+					) {
+						return null;
+					}
 
 					const peopleNeeded = search.peopleNeeded || 1;
 					const peopleJoined = search.peopleJoined || 0;
@@ -322,6 +352,8 @@ export const getAllActiveSearches = query({
 				}),
 		);
 
-		return searchesWithUser;
+		return searchesWithUser.filter(
+			(search): search is NonNullable<typeof search> => search !== null,
+		);
 	},
 });

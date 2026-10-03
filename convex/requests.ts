@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import type { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
+import { usersAreCompatible } from "./matching";
 
 // Get pending requests for a user
 export const getPendingRequests = query({
@@ -62,6 +63,30 @@ export const createRequest = mutation({
 		intent: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
+		if (args.activitySearchId) {
+			const activitySearch = await ctx.db.get(args.activitySearchId);
+			const sender = await ctx.db
+				.query("users")
+				.withIndex("by_workos_id", (q) => q.eq("workosId", args.senderId))
+				.first();
+			const receiver = await ctx.db
+				.query("users")
+				.withIndex("by_workos_id", (q) => q.eq("workosId", args.receiverId))
+				.first();
+
+			if (
+				!activitySearch ||
+				!activitySearch.isActive ||
+				activitySearch.userId === args.senderId ||
+				activitySearch.activityType !== args.activity ||
+				!sender ||
+				!receiver ||
+				!usersAreCompatible(sender, receiver, activitySearch)
+			) {
+				return { success: false, message: "Users do not match preferences" };
+			}
+		}
+
 		// Check if a pending request already exists
 		const existingRequest = await ctx.db
 			.query("requests")

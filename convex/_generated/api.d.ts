@@ -13,6 +13,7 @@ import type * as chats from "../chats.js";
 import type * as communities from "../communities.js";
 import type * as events from "../events.js";
 import type * as files from "../files.js";
+import type * as matching from "../matching.js";
 import type * as messages from "../messages.js";
 import type * as requests from "../requests.js";
 import type * as users from "../users.js";
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   communities: typeof communities;
   events: typeof events;
   files: typeof files;
+  matching: typeof matching;
   messages: typeof messages;
   requests: typeof requests;
   users: typeof users;

@@ -202,12 +202,12 @@ export default function PreferenceOnboarding() {
 				return (
 					<div className="space-y-6">
 						<div className="text-center">
-							<h2 className="text-2xl sm:text-3xl font-bold mb-2">
+							<h2 className="mb-2 text-2xl font-bold sm:text-3xl">
 								What are you here for?
 							</h2>
 							<p className="text-gray-400">Select all that apply</p>
 						</div>
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 							{intentOptions.map((option) =>
 								renderChip(option, intents.includes(option.id), () =>
 									toggleSelection(option.id, intents, setIntents),
@@ -221,12 +221,12 @@ export default function PreferenceOnboarding() {
 				return (
 					<div className="space-y-6">
 						<div className="text-center">
-							<h2 className="text-2xl sm:text-3xl font-bold mb-2">
+							<h2 className="mb-2 text-2xl font-bold sm:text-3xl">
 								What kind of activities do you enjoy?
 							</h2>
 							<p className="text-gray-400">Select all that interest you</p>
 						</div>
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 							{activityOptions.map((option) =>
 								renderChip(option, activities.includes(option.id), () =>
 									toggleSelection(option.id, activities, setActivities),
@@ -240,7 +240,7 @@ export default function PreferenceOnboarding() {
 				return (
 					<div className="space-y-6">
 						<div className="text-center">
-							<h2 className="text-2xl sm:text-3xl font-bold mb-2">
+							<h2 className="mb-2 text-2xl font-bold sm:text-3xl">
 								How do you prefer to connect?
 							</h2>
 							<p className="text-gray-400">Choose the one that fits you best</p>
@@ -259,7 +259,7 @@ export default function PreferenceOnboarding() {
 				return (
 					<div className="space-y-8">
 						<div className="text-center">
-							<h2 className="text-2xl sm:text-3xl font-bold mb-2">
+							<h2 className="mb-2 text-2xl font-bold sm:text-3xl">
 								When are you mostly active?
 							</h2>
 							<p className="text-gray-400">Select your preferred times</p>
@@ -284,7 +284,7 @@ export default function PreferenceOnboarding() {
 				return (
 					<div className="space-y-8">
 						<div className="text-center">
-							<h2 className="text-2xl sm:text-3xl font-bold mb-2">
+							<h2 className="mb-2 text-2xl font-bold sm:text-3xl">
 								You&apos;re all set!
 							</h2>
 							<p className="text-gray-400">
@@ -292,15 +292,15 @@ export default function PreferenceOnboarding() {
 							</p>
 						</div>
 						<div className="space-y-4">
-							<div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-								<p className="text-sm text-gray-400 mb-2">Looking for</p>
+							<div className="p-4 border rounded-2xl bg-white/5 border-white/10">
+								<p className="mb-2 text-sm text-gray-400">Looking for</p>
 								<div className="flex flex-wrap gap-2">
 									{intents.map((id) => {
 										const option = intentOptions.find((o) => o.id === id);
 										return (
 											<span
 												key={id}
-												className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-sm"
+												className="px-3 py-1 text-sm text-purple-300 rounded-full bg-purple-500/20"
 											>
 												{option?.icon} {option?.label}
 											</span>
@@ -308,15 +308,15 @@ export default function PreferenceOnboarding() {
 									})}
 								</div>
 							</div>
-							<div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-								<p className="text-sm text-gray-400 mb-2">Activities</p>
+							<div className="p-4 border rounded-2xl bg-white/5 border-white/10">
+								<p className="mb-2 text-sm text-gray-400">Activities</p>
 								<div className="flex flex-wrap gap-2">
 									{activities.map((id) => {
 										const option = activityOptions.find((o) => o.id === id);
 										return (
 											<span
 												key={id}
-												className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-sm"
+												className="px-3 py-1 text-sm rounded-full bg-cyan-500/20 text-cyan-300"
 											>
 												{option?.icon} {option?.label}
 											</span>
@@ -324,9 +324,9 @@ export default function PreferenceOnboarding() {
 									})}
 								</div>
 							</div>
-							<div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-								<p className="text-sm text-gray-400 mb-2">Connection style</p>
-								<span className="px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 text-sm">
+							<div className="p-4 border rounded-2xl bg-white/5 border-white/10">
+								<p className="mb-2 text-sm text-gray-400">Connection style</p>
+								<span className="px-3 py-1 text-sm text-pink-300 rounded-full bg-pink-500/20">
 									{comfortOptions.find((o) => o.id === comfortPreference)?.icon}{" "}
 									{
 										comfortOptions.find((o) => o.id === comfortPreference)
@@ -334,8 +334,8 @@ export default function PreferenceOnboarding() {
 									}
 								</span>
 							</div>
-							<div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-								<p className="text-sm text-gray-400 mb-2">
+							<div className="p-4 border rounded-2xl bg-white/5 border-white/10">
+								<p className="mb-2 text-sm text-gray-400">
 									Availability & Personality
 								</p>
 								<div className="flex flex-wrap gap-2">
@@ -344,20 +344,20 @@ export default function PreferenceOnboarding() {
 										return (
 											<span
 												key={id}
-												className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-sm"
+												className="px-3 py-1 text-sm text-blue-300 rounded-full bg-blue-500/20"
 											>
 												{option?.icon} {option?.label}
 											</span>
 										);
 									})}
-									<span className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 text-white text-sm capitalize">
+									<span className="px-3 py-1 text-sm text-white capitalize rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20">
 										{personalityType}
 									</span>
 								</div>
 							</div>
 						</div>
 						{error && (
-							<div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-center">
+							<div className="p-4 text-center text-red-400 border rounded-2xl bg-red-500/10 border-red-500/20">
 								{error}
 							</div>
 						)}
@@ -370,11 +370,11 @@ export default function PreferenceOnboarding() {
 	};
 
 	return (
-		<div className="min-h-screen bg-transparent text-white">
-			<div className="max-w-2xl mx-auto px-4 py-8">
+		<div className="min-h-screen text-white bg-transparent">
+			<div className="max-w-2xl px-4 py-8 mx-auto">
 				<header className="mb-8">
 					<div className="flex items-center justify-between mb-6">
-						<span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+						<span className="text-xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text">
 							SocialSphere
 						</span>
 						<span className="text-sm text-gray-400">
@@ -388,12 +388,12 @@ export default function PreferenceOnboarding() {
 					{renderStep()}
 				</main>
 
-				<footer className="flex items-center justify-between gap-4 mt-8 pt-8 glass-solid rounded-none border-t border-white/10">
+				<footer className="flex items-center justify-between gap-4 pt-8 mt-8 border-t rounded-none glass-solid border-white/10">
 					{currentStep > 1 ? (
 						<button
 							type="button"
 							onClick={handleBack}
-							className="px-6 py-3 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-all"
+							className="px-6 py-3 font-medium text-white transition-all border rounded-full border-white/20 hover:bg-white/5"
 						>
 							Back
 						</button>
