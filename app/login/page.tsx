@@ -12,7 +12,7 @@ export default async function LoginPage() {
 	}
 
 	// Get the sign-in URL from WorkOS — return to /home after auth
-	const signInUrl = await getSignInUrl({ returnPathname: "/home" });
+	const signInUrl = await getSignInUrl({ returnTo: "/home" });
 
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen p-6 bg-transparent">
