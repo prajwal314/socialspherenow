@@ -1,5 +1,7 @@
+/// <reference path="../global.d.ts" />
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+// @ts-ignore Next.js handles global CSS side-effect imports at build time.
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import LazyAnoAI from "@/components/LazyAnoAI";

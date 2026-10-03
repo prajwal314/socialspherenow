@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getPreferenceMatchCount } from "./matching";
 
 // Get all live events
 export const getLiveEvents = query({
@@ -144,6 +145,65 @@ export const createEvent = mutation({
 				lastMessagePreview: `Welcome to "${args.title}"!`,
 				lastMessageAt: Date.now(),
 			});
+		}
+
+		// Invite the strongest preference matches when the event requests companions.
+		if (args.peopleNeeded && args.peopleNeeded > 0) {
+			const creator = await ctx.db
+				.query("users")
+				.withIndex("by_workos_id", (q) => q.eq("workosId", args.creatorId))
+				.first();
+
+			if (creator) {
+				const matchingUsers = (await ctx.db.query("users").collect())
+					.filter(
+						(user) =>
+							user.workosId !== args.creatorId &&
+							getPreferenceMatchCount(creator, user) >= 4,
+					)
+					.sort(
+						(first, second) =>
+							getPreferenceMatchCount(creator, second) -
+							getPreferenceMatchCount(creator, first),
+					)
+					.slice(0, args.peopleNeeded);
+
+				for (const match of matchingUsers) {
+					const pendingFromCreator = await ctx.db
+						.query("requests")
+						.withIndex("by_sender", (q) => q.eq("senderId", args.creatorId))
+						.filter((q) =>
+							q.and(
+								q.eq(q.field("receiverId"), match.workosId),
+								q.eq(q.field("status"), "pending"),
+							),
+						)
+						.first();
+					const pendingFromMatch = await ctx.db
+						.query("requests")
+						.withIndex("by_sender", (q) => q.eq("senderId", match.workosId))
+						.filter((q) =>
+							q.and(
+								q.eq(q.field("receiverId"), args.creatorId),
+								q.eq(q.field("status"), "pending"),
+							),
+						)
+						.first();
+
+					if (!pendingFromCreator && !pendingFromMatch) {
+						await ctx.db.insert("requests", {
+							senderId: args.creatorId,
+							senderName: args.creatorName,
+							receiverId: match.workosId,
+							eventId,
+							activity: args.activity,
+							intent: args.title,
+							status: "pending",
+							createdAt: Date.now(),
+						});
+					}
+				}
+			}
 		}
 
 		return eventId;

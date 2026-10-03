@@ -151,6 +151,13 @@ export const saveUserPreferences = mutation({
 		comfortPreference: v.string(),
 		availability: v.array(v.string()),
 		personalityType: v.string(),
+		conversationPreferences: v.array(v.string()),
+		idealWeekend: v.array(v.string()),
+		spontaneity: v.string(),
+		peoplePreference: v.array(v.string()),
+		meetupPreference: v.string(),
+		travelDistance: v.string(),
+		connectionPriorities: v.array(v.string()),
 	},
 	handler: async (ctx, args) => {
 		const existingUser = await ctx.db
@@ -168,6 +175,13 @@ export const saveUserPreferences = mutation({
 			comfortPreference: args.comfortPreference,
 			availability: args.availability,
 			personalityType: args.personalityType,
+			conversationPreferences: args.conversationPreferences,
+			idealWeekend: args.idealWeekend,
+			spontaneity: args.spontaneity,
+			peoplePreference: args.peoplePreference,
+			meetupPreference: args.meetupPreference,
+			travelDistance: args.travelDistance,
+			connectionPriorities: args.connectionPriorities,
 			hasCompletedPreferences: true,
 		});
 
@@ -210,6 +224,13 @@ export const updatePreferences = mutation({
 		comfortPreference: v.optional(v.string()),
 		availability: v.optional(v.array(v.string())),
 		personalityType: v.optional(v.string()),
+		conversationPreferences: v.optional(v.array(v.string())),
+		idealWeekend: v.optional(v.array(v.string())),
+		spontaneity: v.optional(v.string()),
+		peoplePreference: v.optional(v.array(v.string())),
+		meetupPreference: v.optional(v.string()),
+		travelDistance: v.optional(v.string()),
+		connectionPriorities: v.optional(v.array(v.string())),
 	},
 	handler: async (ctx, args) => {
 		const existingUser = await ctx.db
@@ -227,6 +248,13 @@ export const updatePreferences = mutation({
 			comfortPreference?: string;
 			availability?: string[];
 			personalityType?: string;
+			conversationPreferences?: string[];
+			idealWeekend?: string[];
+			spontaneity?: string;
+			peoplePreference?: string[];
+			meetupPreference?: string;
+			travelDistance?: string;
+			connectionPriorities?: string[];
 		} = {};
 		if (args.intents !== undefined) updates.intents = args.intents;
 		if (args.activities !== undefined) updates.activities = args.activities;
@@ -236,6 +264,18 @@ export const updatePreferences = mutation({
 			updates.availability = args.availability;
 		if (args.personalityType !== undefined)
 			updates.personalityType = args.personalityType;
+		if (args.conversationPreferences !== undefined)
+			updates.conversationPreferences = args.conversationPreferences;
+		if (args.idealWeekend !== undefined) updates.idealWeekend = args.idealWeekend;
+		if (args.spontaneity !== undefined) updates.spontaneity = args.spontaneity;
+		if (args.peoplePreference !== undefined)
+			updates.peoplePreference = args.peoplePreference;
+		if (args.meetupPreference !== undefined)
+			updates.meetupPreference = args.meetupPreference;
+		if (args.travelDistance !== undefined)
+			updates.travelDistance = args.travelDistance;
+		if (args.connectionPriorities !== undefined)
+			updates.connectionPriorities = args.connectionPriorities;
 
 		await ctx.db.patch(existingUser._id, updates);
 

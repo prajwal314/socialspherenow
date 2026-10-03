@@ -2,8 +2,40 @@ import type { Doc } from "./_generated/dataModel";
 
 type User = Pick<
 	Doc<"users">,
-	"workosId" | "intents" | "activities" | "availability"
+	| "workosId"
+	| "intents"
+	| "activities"
+	| "comfortPreference"
+	| "availability"
+	| "personalityType"
+	| "conversationPreferences"
+	| "idealWeekend"
+	| "spontaneity"
+	| "peoplePreference"
+	| "meetupPreference"
+	| "travelDistance"
+	| "connectionPriorities"
 >;
+
+const MINIMUM_PREFERENCE_MATCHES = 4;
+
+const arrayPreferences: Array<keyof User> = [
+	"intents",
+	"activities",
+	"availability",
+	"conversationPreferences",
+	"idealWeekend",
+	"peoplePreference",
+	"connectionPriorities",
+];
+
+const scalarPreferences: Array<keyof User> = [
+	"comfortPreference",
+	"personalityType",
+	"spontaneity",
+	"meetupPreference",
+	"travelDistance",
+];
 
 type ActivitySearch = Pick<
 	Doc<"activitySearches">,
@@ -44,6 +76,28 @@ const hasAvailabilityOverlap = (first: User, second: User): boolean => {
 	return first.availability.some((time) => second.availability?.includes(time));
 };
 
+const preferenceValuesMatch = (first: unknown, second: unknown): boolean => {
+	if (Array.isArray(first) && Array.isArray(second)) {
+		return first.some((value) => second.includes(value));
+	}
+
+	return typeof first === "string" && first.length > 0 && first === second;
+};
+
+export const getPreferenceMatchCount = (
+	first: User,
+	second: User,
+): number => {
+	const arrayMatches = arrayPreferences.filter((field) =>
+		preferenceValuesMatch(first[field], second[field]),
+	).length;
+	const scalarMatches = scalarPreferences.filter((field) =>
+		preferenceValuesMatch(first[field], second[field]),
+	).length;
+
+	return arrayMatches + scalarMatches;
+};
+
 const haveSearchPreferenceOverlap = (
 	first: ActivitySearch,
 	second: ActivitySearch,
@@ -74,9 +128,9 @@ export const usersAreCompatible = (
 	receiverSearch?: ActivitySearch,
 ): boolean => {
 	if (sender.workosId === receiver.workosId) return false;
-	if (!hasActivityPreference(sender, search.activityType)) return false;
-	if (!hasActivityPreference(receiver, search.activityType)) return false;
-	if (!hasAvailabilityOverlap(sender, receiver)) return false;
+	if (getPreferenceMatchCount(sender, receiver) < MINIMUM_PREFERENCE_MATCHES) {
+		return false;
+	}
 	if (receiverSearch && !haveSearchPreferenceOverlap(search, receiverSearch)) {
 		return false;
 	}

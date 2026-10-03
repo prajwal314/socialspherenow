@@ -1,7 +1,7 @@
 "use client";
 
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
-import { type ReactNode, useCallback, useEffect, useState, useRef } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@/lib/auth-context";
 
@@ -9,7 +9,6 @@ type SyncStatus = "idle" | "syncing" | "synced" | "error" | "retrying" | "waitin
 
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 1000;
-const AUTH_TIMEOUT_MS = 10000; // Wait max 10 seconds for Convex auth
 
 export function AuthBootstrap({ children }: { children: ReactNode }) {
 	const { user, isLoading: isAuthLoading } = useAuth();
@@ -21,7 +20,6 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
 	const [retryCount, setRetryCount] = useState(0);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [authWaitStarted, setAuthWaitStarted] = useState<number | null>(null);
-	const authTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	// Query to verify user exists in database after sync
 	const convexUser = useQuery(
@@ -120,15 +118,6 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
 		}
 	}, [user, upsertUser, isConvexAuthenticated, syncUserViaApi]);
 
-	// Cleanup timeout on unmount
-	useEffect(() => {
-		return () => {
-			if (authTimeoutRef.current) {
-				clearTimeout(authTimeoutRef.current);
-			}
-		};
-	}, []);
-
 	useEffect(() => {
 		console.log(`[AuthBootstrap] useEffect triggered:`, {
 			hasUser: !!user,
@@ -169,11 +158,10 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
 			return;
 		}
 
-		// If Convex is still loading, wait for it (but with a timeout)
+		// Let Convex finish its normal token loading before starting sync.
 		if (isConvexLoading) {
 			console.log(`[AuthBootstrap] Waiting for Convex auth to complete...`);
 			
-			// Start the timeout timer if not already started
 			if (authWaitStarted === null) {
 				setAuthWaitStarted(Date.now());
 				setSyncStatus("waiting_auth");
@@ -181,28 +169,8 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
 			return;
 		}
 
-		// Convex loading is done but not authenticated
-		// This could be a temporary issue or a real auth failure
-		// Wait a bit more then try to sync anyway (mutation might still work with cached token)
+		// If Convex has no token, use the existing mutation/API fallback immediately.
 		if (!isConvexAuthenticated && !isConvexLoading) {
-			const waitTime = authWaitStarted ? Date.now() - authWaitStarted : 0;
-			
-			if (waitTime < AUTH_TIMEOUT_MS && syncStatus === "waiting_auth") {
-				console.log(`[AuthBootstrap] Convex auth failed but within timeout, waiting... (${waitTime}ms)`);
-				
-				// Set a timeout to try syncing anyway
-				if (!authTimeoutRef.current) {
-					authTimeoutRef.current = setTimeout(() => {
-						console.log(`[AuthBootstrap] Auth timeout reached, attempting sync anyway`);
-						authTimeoutRef.current = null;
-						startSync();
-					}, AUTH_TIMEOUT_MS - waitTime);
-				}
-				return;
-			}
-			
-			// If we've waited long enough or sync status is idle, try to sync
-			// The mutation might succeed if there's a valid cached token
 			console.log(`[AuthBootstrap] Convex auth not successful, attempting sync anyway for user:`, user.id);
 			startSync();
 		}

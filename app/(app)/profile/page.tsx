@@ -63,6 +63,78 @@ const personalityOptions: PersonalityOption[] = [
 	{ id: "extrovert", label: "Extrovert" },
 ];
 
+const conversationOptions: Option[] = [
+	{ id: "deep-meaningful", label: "Deep & meaningful", icon: "💬" },
+	{ id: "casual-chill", label: "Casual & chill", icon: "☕" },
+	{ id: "funny-random", label: "Funny & random", icon: "😂" },
+	{ id: "intellectual", label: "Intellectual", icon: "🧠" },
+	{ id: "career-business", label: "Career / business", icon: "💼" },
+	{ id: "hobbies-interests", label: "Hobbies & interests", icon: "🎨" },
+	{ id: "mostly-listen", label: "I mostly listen", icon: "👂" },
+];
+
+const weekendOptions: Option[] = [
+	{ id: "stay-home", label: "Stay at home", icon: "🏠" },
+	{ id: "cafe-hopping", label: "Café hopping", icon: "☕" },
+	{ id: "explore-city", label: "Explore the city", icon: "🗺️" },
+	{ id: "movies", label: "Movies", icon: "🎬" },
+	{ id: "sports", label: "Sports", icon: "⚽" },
+	{ id: "gaming", label: "Gaming", icon: "🎮" },
+	{ id: "party-nightlife", label: "Party / nightlife", icon: "🎉" },
+	{ id: "short-trip", label: "Short trip", icon: "🚗" },
+	{ id: "study-work", label: "Study / work", icon: "📚" },
+	{ id: "food-hunting", label: "Food hunting", icon: "🍽️" },
+];
+
+const spontaneityOptions: Option[] = [
+	{ id: "plan-everything", label: "I plan everything", icon: "📋" },
+	{ id: "mostly-planned", label: "Mostly planned", icon: "🗓️" },
+	{ id: "balanced", label: "Balanced", icon: "⚖️" },
+	{ id: "usually-spontaneous", label: "Usually spontaneous", icon: "✨" },
+	{ id: "very-spontaneous", label: "Very spontaneous", icon: "🚀" },
+];
+
+const peopleOptions: Option[] = [
+	{ id: "similar-to-me", label: "Similar to me", icon: "🪞" },
+	{ id: "opposite-personality", label: "Opposite personality", icon: "🔄" },
+	{ id: "calm-people", label: "Calm people", icon: "🌿" },
+	{ id: "energetic-people", label: "Energetic people", icon: "⚡" },
+	{ id: "funny-people", label: "Funny people", icon: "😄" },
+	{ id: "ambitious-people", label: "Ambitious people", icon: "🎯" },
+	{ id: "creative-people", label: "Creative people", icon: "🎨" },
+	{ id: "open-minded-people", label: "Open-minded people", icon: "🌎" },
+	{ id: "doesnt-matter", label: "Doesn't matter", icon: "🤝" },
+];
+
+const meetupOptions: Option[] = [
+	{ id: "one-to-one", label: "1-on-1", icon: "👤" },
+	{ id: "small-group", label: "Small group (3–4)", icon: "👥" },
+	{ id: "medium-group", label: "Medium group (5–8)", icon: "👨‍👩‍👧‍👦" },
+	{ id: "large-group", label: "Large group", icon: "🌐" },
+	{ id: "depends-on-activity", label: "Depends on the activity", icon: "🎯" },
+];
+
+const travelOptions: Option[] = [
+	{ id: "under-2-km", label: "Under 2 km", icon: "📍" },
+	{ id: "2-5-km", label: "2–5 km", icon: "🚶" },
+	{ id: "5-10-km", label: "5–10 km", icon: "🚲" },
+	{ id: "10-20-km", label: "10–20 km", icon: "🛴" },
+	{ id: "anywhere-city", label: "Anywhere in my city", icon: "🏙️" },
+	{ id: "anywhere-nearby", label: "Anywhere nearby", icon: "🗺️" },
+];
+
+const connectionPriorityOptions: Option[] = [
+	{ id: "shared-interests", label: "Shared interests", icon: "⭐" },
+	{ id: "personality", label: "Personality", icon: "😊" },
+	{ id: "location", label: "Location", icon: "📍" },
+	{ id: "availability", label: "Availability", icon: "📅" },
+	{ id: "similar-lifestyle", label: "Similar lifestyle", icon: "🏡" },
+	{ id: "communication-style", label: "Communication style", icon: "💬" },
+	{ id: "common-goals", label: "Common goals", icon: "🚀" },
+	{ id: "activity-compatibility", label: "Activity compatibility", icon: "🤝" },
+	{ id: "age-range", label: "Age range", icon: "🎂" },
+];
+
 // Form interfaces
 interface ProfileForm {
 	firstName: string;
@@ -75,6 +147,13 @@ interface PreferencesForm {
 	comfortPreference: string;
 	availability: string[];
 	personalityType: string;
+	conversationPreferences: string[];
+	idealWeekend: string[];
+	spontaneity: string;
+	peoplePreference: string[];
+	meetupPreference: string;
+	travelDistance: string;
+	connectionPriorities: string[];
 }
 
 // Data interfaces
@@ -92,6 +171,13 @@ interface CurrentUser {
 	comfortPreference?: string;
 	availability?: string[];
 	personalityType?: string;
+	conversationPreferences?: string[];
+	idealWeekend?: string[];
+	spontaneity?: string;
+	peoplePreference?: string[];
+	meetupPreference?: string;
+	travelDistance?: string;
+	connectionPriorities?: string[];
 }
 
 interface UserStats {
@@ -146,6 +232,13 @@ export default function Profile() {
 		comfortPreference: "",
 		availability: [],
 		personalityType: "",
+		conversationPreferences: [],
+		idealWeekend: [],
+		spontaneity: "",
+		peoplePreference: [],
+		meetupPreference: "",
+		travelDistance: "",
+		connectionPriorities: [],
 	});
 
 	// Queries
@@ -193,6 +286,13 @@ export default function Profile() {
 				comfortPreference: currentUser.comfortPreference || "",
 				availability: currentUser.availability || [],
 				personalityType: currentUser.personalityType || "ambivert",
+				conversationPreferences: currentUser.conversationPreferences || [],
+				idealWeekend: currentUser.idealWeekend || [],
+				spontaneity: currentUser.spontaneity || "",
+				peoplePreference: currentUser.peoplePreference || [],
+				meetupPreference: currentUser.meetupPreference || "",
+				travelDistance: currentUser.travelDistance || "",
+				connectionPriorities: currentUser.connectionPriorities || [],
 			});
 		}
 	}, [currentUser]);
@@ -235,6 +335,13 @@ export default function Profile() {
 				comfortPreference: preferencesForm.comfortPreference,
 				availability: preferencesForm.availability,
 				personalityType: preferencesForm.personalityType,
+				conversationPreferences: preferencesForm.conversationPreferences,
+				idealWeekend: preferencesForm.idealWeekend,
+				spontaneity: preferencesForm.spontaneity,
+				peoplePreference: preferencesForm.peoplePreference,
+				meetupPreference: preferencesForm.meetupPreference,
+				travelDistance: preferencesForm.travelDistance,
+				connectionPriorities: preferencesForm.connectionPriorities,
 			});
 			setShowSuccess(true);
 			setTimeout(() => {
@@ -385,6 +492,57 @@ export default function Profile() {
 			</span>
 			{isSelected && <span className="ml-auto text-purple-400 text-sm">✓</span>}
 		</button>
+	);
+
+	const renderMultiPreferenceSection = (
+		title: string,
+		options: Option[],
+		field: "conversationPreferences" | "idealWeekend" | "peoplePreference" | "connectionPriorities",
+	): React.ReactElement => (
+		<div>
+			<h2 className="text-sm font-medium text-gray-300 mb-3">{title}</h2>
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+				{options.map((option) => {
+					const selected = preferencesForm[field];
+					return renderChip(
+						option,
+						selected.includes(option.id),
+						() =>
+							setPreferencesForm({
+								...preferencesForm,
+								[field]: selected.includes(option.id)
+									? selected.filter((item) => item !== option.id)
+									: [...selected, option.id],
+							}),
+						true,
+					);
+				})}
+			</div>
+		</div>
+	);
+
+	const renderSinglePreferenceSection = (
+		title: string,
+		options: Option[],
+		field: "spontaneity" | "meetupPreference" | "travelDistance",
+	): React.ReactElement => (
+		<div>
+			<h2 className="text-sm font-medium text-gray-300 mb-3">{title}</h2>
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+				{options.map((option) =>
+					renderChip(
+						option,
+						preferencesForm[field] === option.id,
+						() =>
+							setPreferencesForm({
+								...preferencesForm,
+								[field]: option.id,
+							}),
+						true,
+					),
+				)}
+			</div>
+		</div>
 	);
 
 	// Main profile view
@@ -1178,6 +1336,48 @@ export default function Profile() {
 							))}
 						</div>
 					</div>
+
+					{renderMultiPreferenceSection(
+						"What kind of conversations do you enjoy?",
+						conversationOptions,
+						"conversationPreferences",
+					)}
+
+					{renderMultiPreferenceSection(
+						"What's your ideal weekend?",
+						weekendOptions,
+						"idealWeekend",
+					)}
+
+					{renderSinglePreferenceSection(
+						"How spontaneous are you?",
+						spontaneityOptions,
+						"spontaneity",
+					)}
+
+					{renderMultiPreferenceSection(
+						"What kind of people do you connect with best?",
+						peopleOptions,
+						"peoplePreference",
+					)}
+
+					{renderSinglePreferenceSection(
+						"What's your preferred meetup vibe?",
+						meetupOptions,
+						"meetupPreference",
+					)}
+
+					{renderSinglePreferenceSection(
+						"How far would you travel to meet someone?",
+						travelOptions,
+						"travelDistance",
+					)}
+
+					{renderMultiPreferenceSection(
+						"What matters most when choosing a connection?",
+						connectionPriorityOptions,
+						"connectionPriorities",
+					)}
 
 					{/* Save Button */}
 					<button

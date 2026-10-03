@@ -16,6 +16,13 @@ export default defineSchema({
 		comfortPreference: v.optional(v.string()),
 		availability: v.optional(v.array(v.string())),
 		personalityType: v.optional(v.string()),
+		conversationPreferences: v.optional(v.array(v.string())),
+		idealWeekend: v.optional(v.array(v.string())),
+		spontaneity: v.optional(v.string()),
+		peoplePreference: v.optional(v.array(v.string())),
+		meetupPreference: v.optional(v.string()),
+		travelDistance: v.optional(v.string()),
+		connectionPriorities: v.optional(v.array(v.string())),
 		hasCompletedPreferences: v.optional(v.boolean()),
 	})
 		.index("by_workos_id", ["workosId"])

@@ -9,8 +9,8 @@ import { useAuth } from "@/lib/auth-context";
 
 export const dynamic = "force-dynamic";
 
-const TOTAL_STEPS = 5;
-const PROGRESS_STEPS = [1, 2, 3, 4, 5] as const;
+const TOTAL_STEPS = 12;
+const PROGRESS_STEPS = Array.from({ length: TOTAL_STEPS }, (_, index) => index + 1);
 
 interface Option {
 	id: string;
@@ -62,6 +62,78 @@ const personalityOptions: PersonalityOption[] = [
 	{ id: "extrovert", label: "Extrovert" },
 ];
 
+const conversationOptions: Option[] = [
+	{ id: "deep-meaningful", label: "Deep & meaningful", icon: "💬" },
+	{ id: "casual-chill", label: "Casual & chill", icon: "☕" },
+	{ id: "funny-random", label: "Funny & random", icon: "😂" },
+	{ id: "intellectual", label: "Intellectual", icon: "🧠" },
+	{ id: "career-business", label: "Career / business", icon: "💼" },
+	{ id: "hobbies-interests", label: "Hobbies & interests", icon: "🎨" },
+	{ id: "mostly-listen", label: "I mostly listen", icon: "👂" },
+];
+
+const weekendOptions: Option[] = [
+	{ id: "stay-home", label: "Stay at home", icon: "🏠" },
+	{ id: "cafe-hopping", label: "Café hopping", icon: "☕" },
+	{ id: "explore-city", label: "Explore the city", icon: "🗺️" },
+	{ id: "movies", label: "Movies", icon: "🎬" },
+	{ id: "sports", label: "Sports", icon: "⚽" },
+	{ id: "gaming", label: "Gaming", icon: "🎮" },
+	{ id: "party-nightlife", label: "Party / nightlife", icon: "🎉" },
+	{ id: "short-trip", label: "Short trip", icon: "🚗" },
+	{ id: "study-work", label: "Study / work", icon: "📚" },
+	{ id: "food-hunting", label: "Food hunting", icon: "🍽️" },
+];
+
+const spontaneityOptions: Option[] = [
+	{ id: "plan-everything", label: "I plan everything", icon: "📋" },
+	{ id: "mostly-planned", label: "Mostly planned", icon: "🗓️" },
+	{ id: "balanced", label: "Balanced", icon: "⚖️" },
+	{ id: "usually-spontaneous", label: "Usually spontaneous", icon: "✨" },
+	{ id: "very-spontaneous", label: "Very spontaneous", icon: "🚀" },
+];
+
+const peopleOptions: Option[] = [
+	{ id: "similar-to-me", label: "Similar to me", icon: "🪞" },
+	{ id: "opposite-personality", label: "Opposite personality", icon: "🔄" },
+	{ id: "calm-people", label: "Calm people", icon: "🌿" },
+	{ id: "energetic-people", label: "Energetic people", icon: "⚡" },
+	{ id: "funny-people", label: "Funny people", icon: "😄" },
+	{ id: "ambitious-people", label: "Ambitious people", icon: "🎯" },
+	{ id: "creative-people", label: "Creative people", icon: "🎨" },
+	{ id: "open-minded-people", label: "Open-minded people", icon: "🌎" },
+	{ id: "doesnt-matter", label: "Doesn't matter", icon: "🤝" },
+];
+
+const meetupOptions: Option[] = [
+	{ id: "one-to-one", label: "1-on-1", icon: "👤" },
+	{ id: "small-group", label: "Small group (3–4)", icon: "👥" },
+	{ id: "medium-group", label: "Medium group (5–8)", icon: "👨‍👩‍👧‍👦" },
+	{ id: "large-group", label: "Large group", icon: "🌐" },
+	{ id: "depends-on-activity", label: "Depends on the activity", icon: "🎯" },
+];
+
+const travelOptions: Option[] = [
+	{ id: "under-2-km", label: "Under 2 km", icon: "📍" },
+	{ id: "2-5-km", label: "2–5 km", icon: "🚶" },
+	{ id: "5-10-km", label: "5–10 km", icon: "🚲" },
+	{ id: "10-20-km", label: "10–20 km", icon: "🛴" },
+	{ id: "anywhere-city", label: "Anywhere in my city", icon: "🏙️" },
+	{ id: "anywhere-nearby", label: "Anywhere nearby", icon: "🗺️" },
+];
+
+const connectionPriorityOptions: Option[] = [
+	{ id: "shared-interests", label: "Shared interests", icon: "⭐" },
+	{ id: "personality", label: "Personality", icon: "😊" },
+	{ id: "location", label: "Location", icon: "📍" },
+	{ id: "availability", label: "Availability", icon: "📅" },
+	{ id: "similar-lifestyle", label: "Similar lifestyle", icon: "🏡" },
+	{ id: "communication-style", label: "Communication style", icon: "💬" },
+	{ id: "common-goals", label: "Common goals", icon: "🚀" },
+	{ id: "activity-compatibility", label: "Activity compatibility", icon: "🤝" },
+	{ id: "age-range", label: "Age range", icon: "🎂" },
+];
+
 export default function PreferenceOnboarding() {
 	const router = useRouter();
 	const { user } = useAuth();
@@ -76,6 +148,13 @@ export default function PreferenceOnboarding() {
 	const [comfortPreference, setComfortPreference] = useState<string>("");
 	const [availability, setAvailability] = useState<string[]>([]);
 	const [personalityType, setPersonalityType] = useState<string>("ambivert");
+	const [conversationPreferences, setConversationPreferences] = useState<string[]>([]);
+	const [idealWeekend, setIdealWeekend] = useState<string[]>([]);
+	const [spontaneity, setSpontaneity] = useState<string>("");
+	const [peoplePreference, setPeoplePreference] = useState<string[]>([]);
+	const [meetupPreference, setMeetupPreference] = useState<string>("");
+	const [travelDistance, setTravelDistance] = useState<string>("");
+	const [connectionPriorities, setConnectionPriorities] = useState<string[]>([]);
 
 	const toggleSelection = (
 		value: string,
@@ -100,6 +179,20 @@ export default function PreferenceOnboarding() {
 			case 4:
 				return availability.length > 0 && personalityType !== "";
 			case 5:
+				return conversationPreferences.length > 0;
+			case 6:
+				return idealWeekend.length > 0;
+			case 7:
+				return spontaneity !== "";
+			case 8:
+				return peoplePreference.length > 0;
+			case 9:
+				return meetupPreference !== "";
+			case 10:
+				return travelDistance !== "";
+			case 11:
+				return connectionPriorities.length > 0;
+			case 12:
 				return true;
 			default:
 				return false;
@@ -132,6 +225,13 @@ export default function PreferenceOnboarding() {
 				comfortPreference,
 				availability,
 				personalityType,
+				conversationPreferences,
+				idealWeekend,
+				spontaneity,
+				peoplePreference,
+				meetupPreference,
+				travelDistance,
+				connectionPriorities,
 			});
 			router.push("/home");
 		} catch (err) {
@@ -193,6 +293,74 @@ export default function PreferenceOnboarding() {
 					{option.label}
 				</button>
 			))}
+		</div>
+	);
+
+	const renderMultiSelectQuestion = (
+		title: string,
+		subtitle: string,
+		options: Option[],
+		selected: string[],
+		setSelected: React.Dispatch<React.SetStateAction<string[]>>,
+	): React.ReactNode => (
+		<div className="space-y-6">
+			<div className="text-center">
+				<h2 className="mb-2 text-2xl font-bold sm:text-3xl">{title}</h2>
+				<p className="text-gray-400">{subtitle}</p>
+			</div>
+			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+				{options.map((option) =>
+					renderChip(option, selected.includes(option.id), () =>
+						toggleSelection(option.id, selected, setSelected),
+					),
+				)}
+			</div>
+		</div>
+	);
+
+	const renderSingleSelectQuestion = (
+		title: string,
+		subtitle: string,
+		options: Option[],
+		selected: string,
+		setSelected: React.Dispatch<React.SetStateAction<string>>,
+	): React.ReactNode => (
+		<div className="space-y-6">
+			<div className="text-center">
+				<h2 className="mb-2 text-2xl font-bold sm:text-3xl">{title}</h2>
+				<p className="text-gray-400">{subtitle}</p>
+			</div>
+			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+				{options.map((option) =>
+					renderChip(option, selected === option.id, () =>
+						setSelected(option.id),
+					),
+				)}
+			</div>
+		</div>
+	);
+
+	const renderSummarySection = (
+		label: string,
+		values: string[],
+		options: Option[],
+		className: string,
+	): React.ReactNode => (
+		<div className="p-4 border rounded-2xl bg-white/5 border-white/10">
+			<p className="mb-2 text-sm text-gray-400">{label}</p>
+			<div className="flex flex-wrap gap-2">
+				{values.map((id) => {
+					const option = options.find((item) => item.id === id);
+					return (
+						<span
+							key={id}
+							className={`px-3 py-1 text-sm rounded-full ${className}`}
+						>
+							{option?.icon} {option?.label}
+						</span>
+					);
+				})}
+			</div>
 		</div>
 	);
 
@@ -281,6 +449,69 @@ export default function PreferenceOnboarding() {
 				);
 
 			case 5:
+				return renderMultiSelectQuestion(
+					"What kind of conversations do you enjoy?",
+					"Select all that sound like you",
+					conversationOptions,
+					conversationPreferences,
+					setConversationPreferences,
+				);
+
+			case 6:
+				return renderMultiSelectQuestion(
+					"What's your ideal weekend?",
+					"Pick the moments you enjoy most",
+					weekendOptions,
+					idealWeekend,
+					setIdealWeekend,
+				);
+
+			case 7:
+				return renderSingleSelectQuestion(
+					"How spontaneous are you?",
+					"Choose the option that fits you best",
+					spontaneityOptions,
+					spontaneity,
+					setSpontaneity,
+				);
+
+			case 8:
+				return renderMultiSelectQuestion(
+					"What kind of people do you connect with best?",
+					"Select all that feel like a good fit",
+					peopleOptions,
+					peoplePreference,
+					setPeoplePreference,
+				);
+
+			case 9:
+				return renderSingleSelectQuestion(
+					"What's your preferred meetup vibe?",
+					"Choose your usual comfort zone",
+					meetupOptions,
+					meetupPreference,
+					setMeetupPreference,
+				);
+
+			case 10:
+				return renderSingleSelectQuestion(
+					"How far would you travel to meet someone?",
+					"Choose the distance that feels comfortable",
+					travelOptions,
+					travelDistance,
+					setTravelDistance,
+				);
+
+			case 11:
+				return renderMultiSelectQuestion(
+					"What matters most when choosing a connection?",
+					"Select all that matter to you",
+					connectionPriorityOptions,
+					connectionPriorities,
+					setConnectionPriorities,
+				);
+
+			case 12:
 				return (
 					<div className="space-y-8">
 						<div className="text-center">
@@ -306,6 +537,54 @@ export default function PreferenceOnboarding() {
 											</span>
 										);
 									})}
+								</div>
+							</div>
+							{renderSummarySection(
+								"Conversation preferences",
+								conversationPreferences,
+								conversationOptions,
+								"bg-purple-500/20 text-purple-300",
+							)}
+							{renderSummarySection(
+								"Ideal weekend",
+								idealWeekend,
+								weekendOptions,
+								"bg-cyan-500/20 text-cyan-300",
+							)}
+							{renderSummarySection(
+								"People you connect with",
+								peoplePreference,
+								peopleOptions,
+								"bg-pink-500/20 text-pink-300",
+							)}
+							{renderSummarySection(
+								"Connection priorities",
+								connectionPriorities,
+								connectionPriorityOptions,
+								"bg-blue-500/20 text-blue-300",
+							)}
+							<div className="p-4 border rounded-2xl bg-white/5 border-white/10">
+								<p className="mb-2 text-sm text-gray-400">Matching preferences</p>
+								<div className="flex flex-wrap gap-2">
+									{([
+										["Spontaneity", spontaneity, spontaneityOptions],
+										["Meetup vibe", meetupPreference, meetupOptions],
+										["Travel distance", travelDistance, travelOptions],
+									] as Array<[string, string, Option[]]>).map(
+										([label, value, options]) => {
+										const option = (options as Option[]).find(
+											(item) => item.id === value,
+										);
+										return (
+											<span
+												key={label}
+												className="px-3 py-1 text-sm text-white capitalize rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20"
+											>
+												{label}: {option?.icon} {option?.label}
+											</span>
+										);
+										},
+									)}
 								</div>
 							</div>
 							<div className="p-4 border rounded-2xl bg-white/5 border-white/10">
