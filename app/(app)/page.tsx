@@ -453,7 +453,7 @@ export default function Onboarding() {
 						<div className="w-full max-w-[34rem] min-w-0">
 							<h1 className="text-[1.85rem] xs:text-[2.1rem] sm:text-5xl lg:text-[4.25rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white break-words">
 								A social app built for{" "}
-								<span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+								<span className="text-[#0c8b96]">
 									comfort
 								</span>
 								, not pressure.
@@ -487,7 +487,7 @@ export default function Onboarding() {
 					<div className="text-center mb-10 sm:mb-12 lg:mb-16 px-1">
 						<h2 className="text-[1.7rem] xs:text-2xl sm:text-4xl font-bold mb-3 sm:mb-4 leading-tight break-words">
 							Everything you need to{" "}
-							<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+							<span className="text-[#0c8b96]">
 								connect comfortably
 							</span>
 						</h2>
@@ -543,7 +543,7 @@ export default function Onboarding() {
 					<div className="text-center mb-10 sm:mb-12 lg:mb-16 px-1">
 						<h2 className="text-[1.7rem] xs:text-2xl sm:text-4xl font-bold mb-3 sm:mb-4 break-words">
 							How it{" "}
-							<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+							<span className="text-[#0c8b96]">
 								works
 							</span>
 						</h2>
@@ -559,7 +559,7 @@ export default function Onboarding() {
 									<div className="hidden lg:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-transparent -translate-x-1/2" />
 								)}
 								<div className="p-5 sm:p-6 lg:p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 h-full">
-									<span className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+									<span className="text-4xl sm:text-5xl font-bold text-[#0c8b96]">
 										{step.number}
 									</span>
 									<h3 className="text-lg sm:text-xl font-semibold mt-3 sm:mt-4 mb-1 sm:mb-2 leading-tight break-words">
@@ -581,7 +581,7 @@ export default function Onboarding() {
 					<div className="relative w-full max-w-4xl mx-auto text-center px-1 sm:px-2">
 						<h2 className="text-[1.6rem] xs:text-2xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 leading-tight break-words">
 							Social life shouldn&apos;t feel{" "}
-							<span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+							<span className="text-[#0c8b96]">
 								difficult
 							</span>
 							.
@@ -601,7 +601,7 @@ export default function Onboarding() {
 
 			<footer className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 glass-solid rounded-none border-t border-white/10 relative z-10 overflow-hidden">
 				<div className="max-w-6xl mx-auto text-center text-gray-500 text-sm">
-					<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent font-medium">
+					<span className="text-[#0c8b96] font-medium">
 						SocialSphere
 					</span>{" "}
 					— Built for comfort, not pressure.

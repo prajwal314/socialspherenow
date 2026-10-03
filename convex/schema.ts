@@ -23,6 +23,7 @@ export default defineSchema({
 		meetupPreference: v.optional(v.string()),
 		travelDistance: v.optional(v.string()),
 		connectionPriorities: v.optional(v.array(v.string())),
+		termsAcceptedAt: v.optional(v.number()),
 		hasCompletedPreferences: v.optional(v.boolean()),
 	})
 		.index("by_workos_id", ["workosId"])

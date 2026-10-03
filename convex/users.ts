@@ -169,6 +169,10 @@ export const saveUserPreferences = mutation({
 			throw new Error("User not found");
 		}
 
+		if (!existingUser.termsAcceptedAt) {
+			throw new Error("Terms and conditions must be accepted first");
+		}
+
 		await ctx.db.patch(existingUser._id, {
 			intents: args.intents,
 			activities: args.activities,
@@ -184,6 +188,27 @@ export const saveUserPreferences = mutation({
 			connectionPriorities: args.connectionPriorities,
 			hasCompletedPreferences: true,
 		});
+
+		return existingUser._id;
+	},
+});
+
+// Record acceptance before a user can continue to preference onboarding.
+export const acceptTerms = mutation({
+	args: { workosId: v.string() },
+	handler: async (ctx, args) => {
+		const existingUser = await ctx.db
+			.query("users")
+			.withIndex("by_workos_id", (q) => q.eq("workosId", args.workosId))
+			.first();
+
+		if (!existingUser) {
+			throw new Error("User not found");
+		}
+
+		if (!existingUser.termsAcceptedAt) {
+			await ctx.db.patch(existingUser._id, { termsAcceptedAt: Date.now() });
+		}
 
 		return existingUser._id;
 	},

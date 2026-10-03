@@ -86,7 +86,7 @@ export default function HelpSupport(): React.ReactElement {
 						Back to Profile
 					</button>
 					<h1 className="text-2xl sm:text-3xl font-bold">
-						<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+						<span className="text-[#0c8b96]">
 							Help & Support
 						</span>
 					</h1>

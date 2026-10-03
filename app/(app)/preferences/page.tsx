@@ -1,10 +1,11 @@
 "use client";
 
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/lib/auth-context";
 
 export const dynamic = "force-dynamic";
@@ -138,6 +139,10 @@ export default function PreferenceOnboarding() {
 	const router = useRouter();
 	const { user } = useAuth();
 	const savePreferences = useMutation(api.users.saveUserPreferences);
+	const currentUser = useQuery(
+		api.users.getByWorkosId,
+		user?.id ? { workosId: user.id } : "skip",
+	) as { _id: Id<"users">; termsAcceptedAt?: number } | undefined | null;
 
 	const [currentStep, setCurrentStep] = useState<number>(1);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -155,6 +160,12 @@ export default function PreferenceOnboarding() {
 	const [meetupPreference, setMeetupPreference] = useState<string>("");
 	const [travelDistance, setTravelDistance] = useState<string>("");
 	const [connectionPriorities, setConnectionPriorities] = useState<string[]>([]);
+
+	useEffect(() => {
+		if (currentUser && !currentUser.termsAcceptedAt) {
+			router.replace("/terms");
+		}
+	}, [currentUser, router]);
 
 	const toggleSelection = (
 		value: string,
@@ -653,7 +664,7 @@ export default function PreferenceOnboarding() {
 			<div className="max-w-2xl px-4 py-8 mx-auto">
 				<header className="mb-8">
 					<div className="flex items-center justify-between mb-6">
-						<span className="text-xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text">
+						<span className="text-xl font-bold text-[#0c8b96]">
 							SocialSphere
 						</span>
 						<span className="text-sm text-gray-400">

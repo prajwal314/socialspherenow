@@ -634,19 +634,19 @@ export default function Profile() {
 					{userStats && (
 						<div className="flex items-center justify-around mt-6 pt-6 border-t border-white/10">
 							<div className="text-center">
-								<p className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+								<p className="text-2xl font-bold text-[#0c8b96]">
 									{userStats.connections}
 								</p>
 								<p className="text-gray-500 text-xs mt-1">Connections</p>
 							</div>
 							<div className="text-center">
-								<p className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+								<p className="text-2xl font-bold text-[#0c8b96]">
 									{userStats.eventsCreated}
 								</p>
 								<p className="text-gray-500 text-xs mt-1">Events</p>
 							</div>
 							<div className="text-center">
-								<p className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+								<p className="text-2xl font-bold text-[#0c8b96]">
 									{userStats.communitiesJoined}
 								</p>
 								<p className="text-gray-500 text-xs mt-1">Communities</p>

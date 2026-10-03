@@ -1,7 +1,8 @@
 "use client";
 
 import { useMutation, useQuery } from "convex/react";
-import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { type ChangeEvent, type FormEvent, useEffect, useRef, useState } from "react";
 import BottomNav from "@/components/BottomNav";
 import CommunityDetailModal from "@/components/CommunityDetailModal";
 import CreateCommunityModal from "@/components/CreateCommunityModal";
@@ -113,10 +114,13 @@ interface EventDetails {
 interface CurrentUser {
 	_id: Id<"users">;
 	firstName?: string;
+	termsAcceptedAt?: number;
+	hasCompletedPreferences?: boolean;
 }
 
 export default function Home() {
 	const { user } = useAuth();
+	const router = useRouter();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isCommunityModalOpen, setIsCommunityModalOpen] = useState(false);
 	const [viewingCommunityId, setViewingCommunityId] =
@@ -149,6 +153,15 @@ export default function Home() {
 		api.users.getByWorkosId,
 		user?.id ? { workosId: user.id } : "skip",
 	) as CurrentUser | undefined | null;
+
+	useEffect(() => {
+		if (!currentUser) return;
+		if (!currentUser.termsAcceptedAt) {
+			router.replace("/terms");
+		} else if (!currentUser.hasCompletedPreferences) {
+			router.replace("/preferences");
+		}
+	}, [currentUser, router]);
 
 	// Get ALL live events (excluding user's own)
 	const liveEvents = useQuery(
@@ -425,7 +438,7 @@ export default function Home() {
 					<div className="relative">
 						<h1 className="text-2xl sm:text-3xl font-bold">
 							{getGreeting()},{" "}
-							<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+							<span className="text-[#0c8b96]">
 								{currentUser?.firstName ?? user?.firstName ?? "there"}
 							</span>
 						</h1>
@@ -490,6 +503,30 @@ export default function Home() {
 						</div>
 					</section>
 				)}
+
+				{/* Trending Events Section */}
+				<section className="mb-8 rounded-2xl border border-orange-400/20 bg-gradient-to-r from-orange-500/10 via-pink-500/10 to-purple-500/10 p-5 sm:p-6">
+					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+						<div>
+							<div className="mb-2 flex items-center gap-2">
+								<span className="text-xl">🔥</span>
+								<h2 className="text-lg font-semibold text-white">
+									Trending Events
+								</h2>
+							</div>
+							<p className="text-sm text-gray-300">
+								Find people who want to celebrate, explore, and make memories together.
+							</p>
+						</div>
+						<button
+							type="button"
+							onClick={() => setIsModalOpen(true)}
+							className="shrink-0 rounded-full bg-[#0c8b96] px-5 py-2.5 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-900/30"
+						>
+							search your garba partner
+						</button>
+					</div>
+				</section>
 
 				{/* Suggested Companions Section */}
 				<section className="mb-8">
@@ -1026,7 +1063,7 @@ export default function Home() {
 							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
 								{/* Modal Header */}
 								<div className="px-6 py-5 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#1e1e2e] rounded-t-3xl z-10">
-									<h3 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+									<h3 className="text-xl font-semibold text-[#0c8b96]">
 										Create Event
 									</h3>
 									<button

@@ -1305,7 +1305,7 @@ export default function Explore() {
 					<div className="absolute -top-20 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 					<div className="relative">
 						<h1 className="text-2xl sm:text-3xl font-bold mb-2">
-							<span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+							<span className="text-[#0c8b96]">
 								Explore
 							</span>
 						</h1>
