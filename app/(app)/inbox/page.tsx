@@ -465,7 +465,7 @@ export default function Inbox() {
 			</div>
 
 			{/* Chat list */}
-			<div className="sm:rounded-2xl bg-[#1e1e2e] border border-white/10 -mx-4 sm:mx-0 overflow-hidden">
+			<div className="glass-card sm:rounded-2xl border border-white/10 -mx-4 sm:mx-0 overflow-hidden">
 				{chats === undefined ? (
 					<div className="flex items-center justify-center py-20">
 						<div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />

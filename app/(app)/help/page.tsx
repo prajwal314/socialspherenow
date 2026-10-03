@@ -117,7 +117,7 @@ export default function HelpSupport(): React.ReactElement {
 						{faqItems.map((faq, index) => (
 							<div
 								key={faq.question}
-								className="rounded-2xl bg-[#1e1e2e] border border-white/10 overflow-hidden"
+								className="glass-card rounded-2xl border border-white/10 overflow-hidden"
 							>
 								<button
 									type="button"
@@ -177,7 +177,7 @@ export default function HelpSupport(): React.ReactElement {
 						</span>
 						Contact Us
 					</h2>
-					<div className="p-5 rounded-2xl bg-[#1e1e2e] border border-white/10">
+					<div className="glass-card p-5 rounded-2xl border border-white/10">
 						<p className="text-gray-400 text-sm mb-4">
 							Can't find what you're looking for? Reach out to us directly.
 						</p>
@@ -232,7 +232,7 @@ export default function HelpSupport(): React.ReactElement {
 						</span>
 						Send Feedback
 					</h2>
-					<div className="p-5 rounded-2xl bg-[#1e1e2e] border border-white/10">
+					<div className="glass-card p-5 rounded-2xl border border-white/10">
 						<p className="text-gray-400 text-sm mb-4">
 							We'd love to hear your thoughts! Help us improve SocialSphere.
 						</p>

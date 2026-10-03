@@ -1358,7 +1358,7 @@ export default function Explore() {
 									type="button"
 									key={activity.id}
 									onClick={() => handleActivityClick(activity)}
-									className={`group relative p-5 rounded-2xl border text-left transition-all duration-300 overflow-hidden ${
+									className={`glass-card group relative p-5 rounded-2xl border text-left transition-all duration-300 overflow-hidden ${
 										isActive
 											? "bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border-purple-500/30"
 											: "bg-[#1e1e2e] border-white/10 hover:border-white/20"
@@ -1414,7 +1414,7 @@ export default function Explore() {
 								return (
 									<div
 										key={community._id}
-										className={`group p-5 rounded-2xl border transition-all duration-300 ${
+										className={`glass-card group p-5 rounded-2xl border transition-all duration-300 ${
 											isUserInterest
 												? "bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border-cyan-500/20"
 												: "bg-[#1e1e2e] border-white/10 hover:border-white/20"
@@ -1477,7 +1477,7 @@ export default function Explore() {
 							<div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 						</div>
 					) : (
-						<div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl bg-[#1e1e2e] border border-white/5">
+						<div className="glass-card flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-white/5">
 							<div className="w-14 h-14 mb-3 rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
 								<span className="text-2xl">👥</span>
 							</div>
@@ -1502,7 +1502,7 @@ export default function Explore() {
 					/>
 					<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
-							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
+							<div className="glass-card w-full max-w-md rounded-3xl border border-white/10 shadow-2xl pointer-events-auto">
 								{/* Modal Header */}
 								<div
 									className={`px-6 py-5 bg-gradient-to-r ${selectedActivity.gradient} bg-opacity-20 rounded-t-3xl`}

@@ -559,7 +559,7 @@ export default function Home() {
 								return (
 									<div
 										key={search._id}
-										className="group p-5 rounded-2xl bg-[#1e1e2e] border border-white/10 hover:border-cyan-500/30 transition-all duration-300"
+										className="glass-card group p-5 rounded-2xl border border-white/10 hover:border-cyan-500/30 transition-all duration-300"
 									>
 										{/* Header with user info */}
 										<div className="flex items-start gap-3 mb-4">
@@ -723,7 +723,7 @@ export default function Home() {
 							<div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 						</div>
 					) : (
-						<div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl bg-[#1e1e2e] border border-white/5">
+						<div className="glass-card flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-white/5">
 							<div className="w-14 h-14 mb-3 rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
 								<span className="text-2xl">🔍</span>
 							</div>
@@ -758,7 +758,7 @@ export default function Home() {
 							{liveEvents.map((event) => (
 								<div
 									key={event._id}
-									className="group flex flex-col rounded-2xl bg-[#1e1e2e] border border-white/10 hover:border-purple-500/30 transition-all duration-300 overflow-hidden"
+									className="glass-card group flex flex-col rounded-2xl border border-white/10 hover:border-purple-500/30 transition-all duration-300 overflow-hidden"
 								>
 									{/* Event Image - always on top */}
 									{event.imageUrl && (
@@ -875,7 +875,7 @@ export default function Home() {
 							))}
 						</div>
 					) : (
-						<div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl bg-[#1e1e2e] border border-white/5">
+						<div className="glass-card flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-white/5">
 							<div className="w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
 								<svg
 									className="w-8 h-8 text-purple-400"
@@ -921,7 +921,7 @@ export default function Home() {
 								return (
 									<div
 										key={community._id}
-										className="group p-5 rounded-2xl bg-[#1e1e2e] border border-white/10 hover:border-cyan-500/30 transition-all duration-300"
+										className="glass-card group p-5 rounded-2xl border border-white/10 hover:border-cyan-500/30 transition-all duration-300"
 									>
 										<div className="flex items-start gap-4 mb-3">
 											<button
@@ -983,7 +983,7 @@ export default function Home() {
 							<div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 						</div>
 					) : (
-						<div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl bg-[#1e1e2e] border border-white/5">
+						<div className="glass-card flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-white/5">
 							<div className="w-14 h-14 mb-3 rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
 								<span className="text-2xl">👥</span>
 							</div>
@@ -1060,9 +1060,9 @@ export default function Home() {
 					/>
 					<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
-							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
+							<div className="glass-card w-full max-w-md rounded-3xl border border-white/10 shadow-2xl pointer-events-auto">
 								{/* Modal Header */}
-								<div className="px-6 py-5 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#1e1e2e] rounded-t-3xl z-10">
+								<div className="glass-card px-6 py-5 border-b border-white/10 flex items-center justify-between sticky top-0 rounded-t-3xl z-10">
 									<h3 className="text-xl font-semibold text-[#0c8b96]">
 										Create Event
 									</h3>
@@ -1344,7 +1344,7 @@ export default function Home() {
 					/>
 					<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 						<div className="min-h-full flex items-center justify-center p-4 py-8">
-							<div className="w-full max-w-md rounded-3xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto overflow-hidden flex flex-col">
+							<div className="glass-card w-full max-w-md rounded-3xl border border-white/10 shadow-2xl pointer-events-auto overflow-hidden flex flex-col">
 								{eventDetails ? (
 									<>
 										{/* Event Image - fully visible, not cropped, text strictly below */}

@@ -511,7 +511,7 @@ export default function Onboarding() {
 								/>
 
 								<div className="flex-1 w-full min-w-0 relative z-10">
-									<div className="relative p-5 sm:p-6 lg:p-8 rounded-3xl bg-[#1e1e2e]/80 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 group overflow-hidden">
+									<div className="glass-card relative p-5 sm:p-6 lg:p-8 rounded-3xl border border-white/10 hover:border-white/20 transition-all duration-300 group overflow-hidden">
 										<div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 										<div className="relative min-w-0">
 											<div className="mb-4 sm:mb-6 inline-flex p-2.5 sm:p-3 rounded-2xl bg-white/10">

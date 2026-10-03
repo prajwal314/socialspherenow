@@ -551,7 +551,7 @@ export default function Profile() {
 			{/* Profile Header */}
 			<div className="relative">
 				<div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-3xl blur-xl" />
-				<div className="relative p-6 rounded-3xl bg-[#1e1e2e] border border-white/10">
+				<div className="glass-card relative p-6 rounded-3xl border border-white/10">
 					<div className="flex items-center gap-4">
 						{/* Avatar with upload button */}
 						<div className="relative group">
@@ -658,7 +658,7 @@ export default function Profile() {
 
 			{/* Current Preferences Summary */}
 			{currentUser?.hasCompletedPreferences && (
-				<div className="p-5 rounded-2xl bg-[#1e1e2e] border border-white/10">
+				<div className="glass-card p-5 rounded-2xl border border-white/10">
 					<div className="flex items-center justify-between mb-4">
 						<h2 className="font-semibold text-white">Your Preferences</h2>
 						<button
@@ -742,7 +742,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => setActiveView("myEvents")}
-					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
+					className="glass-card w-full p-4 rounded-2xl border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
 						<svg
@@ -790,7 +790,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => setActiveView("editProfile")}
-					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
+					className="glass-card w-full p-4 rounded-2xl border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
 						<svg
@@ -831,7 +831,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => setActiveView("editPreferences")}
-					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
+					className="glass-card w-full p-4 rounded-2xl border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
 						<svg
@@ -872,7 +872,7 @@ export default function Profile() {
 				<button
 					type="button"
 					onClick={() => router.push("/help")}
-					className="w-full p-4 rounded-2xl bg-[#1e1e2e] border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
+					className="glass-card w-full p-4 rounded-2xl border border-white/10 flex items-center gap-4 hover:bg-[#252536] transition-colors text-left touch-manipulation"
 				>
 					<div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
 						<svg
@@ -1474,7 +1474,7 @@ export default function Profile() {
 						return (
 							<div
 								key={event._id}
-								className={`p-4 rounded-2xl bg-[#1e1e2e] border transition-all ${
+								className={`glass-card p-4 rounded-2xl border transition-all ${
 									isEnded
 										? "border-white/5 opacity-60"
 										: "border-white/10 hover:border-white/20"
@@ -1589,7 +1589,7 @@ export default function Profile() {
 					/>
 
 					{/* Modal Content */}
-					<div className="relative w-[90%] max-w-sm mx-auto p-6 rounded-2xl bg-[#1e1e2e] border border-white/10 shadow-2xl pointer-events-auto">
+					<div className="glass-card relative w-[90%] max-w-sm mx-auto p-6 rounded-2xl border border-white/10 shadow-2xl pointer-events-auto">
 						{/* Warning Icon */}
 						<div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
 							<svg
