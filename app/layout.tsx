@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import LazyAnoAI from "@/components/LazyAnoAI";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+	subsets: ["latin"],
+	weight: ["400", "500", "600", "700", "800"],
+	variable: "--font-primary",
+	display: "swap",
+});
 
 export const metadata: Metadata = {
 	title: "SocialSphere - Connect Comfortably",
@@ -23,7 +31,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className="bg-black text-white antialiased overflow-x-hidden"
+				className={`${plusJakartaSans.variable} bg-black text-white antialiased overflow-x-hidden`}
 				suppressHydrationWarning
 			>
 				<div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">

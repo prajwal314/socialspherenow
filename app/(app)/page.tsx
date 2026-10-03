@@ -430,7 +430,7 @@ export default function Onboarding() {
 						</span>
 						<Link
 							href={buttonHref}
-							className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium text-xs sm:text-sm hover:opacity-90 transition-opacity shrink-0 whitespace-nowrap leading-none"
+							className="inline-flex items-center justify-center px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#0c8b96] text-white border border-white/20 font-medium text-xs sm:text-sm hover:opacity-90 transition-opacity shrink-0 whitespace-nowrap leading-none"
 						>
 							{buttonText}
 						</Link>
@@ -451,7 +451,7 @@ export default function Onboarding() {
 				>
 					<div className="flex h-full min-h-[92svh] items-start px-4 xs:px-5 sm:px-10 pt-10 xs:pt-14 sm:pt-16 md:min-h-[720px] md:items-center md:pt-0 lg:px-20">
 						<div className="w-full max-w-[34rem] min-w-0">
-							<h1 className="text-[1.85rem] xs:text-[2.1rem] sm:text-5xl lg:text-[4.25rem] font-light leading-[1.05] tracking-[-0.03em] text-white break-words">
+							<h1 className="text-[1.85rem] xs:text-[2.1rem] sm:text-5xl lg:text-[4.25rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white break-words">
 								A social app built for{" "}
 								<span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
 									comfort
