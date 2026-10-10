@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
 	const [visible, setVisible] = useState(true);
@@ -37,7 +38,7 @@ export default function Navbar() {
 						<span className="text-lg sm:text-2xl md:text-4xl font-bold text-white truncate">SocialSphere</span>
 					</Link>
 					<div className="flex items-center space-x-4">
-						{/* Additional nav items can go here */}
+						<NotificationBell />
 					</div>
 				</div>
 			</div>

@@ -1,11 +1,10 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-// Get all chats for a user (direct + community + activity)
+// Get all chats for a user (direct + community + group + activity)
 export const getUserChats = query({
 	args: { userId: v.string() },
 	handler: async (ctx, args) => {
-		// Get direct chats where user is a participant
 		const allChats = await ctx.db.query("chats").order("desc").collect();
 
 		const directChats = allChats.filter(
@@ -13,7 +12,6 @@ export const getUserChats = query({
 				chat.type === "direct" && chat.participantIds?.includes(args.userId),
 		);
 
-		// Get community chats for communities user has joined
 		const userMemberships = await ctx.db
 			.query("communityMembers")
 			.withIndex("by_user", (q) => q.eq("userId", args.userId))
@@ -27,8 +25,21 @@ export const getUserChats = query({
 				communityIds.includes(chat.communityId),
 		);
 
-		// Combine and sort by last message
-		const allUserChats = [...directChats, ...communityChats].sort((a, b) => {
+		const userGroupMemberships = await ctx.db
+			.query("communityGroupMembers")
+			.withIndex("by_user", (q) => q.eq("userId", args.userId))
+			.collect();
+		const userGroupIds = new Set(userGroupMemberships.map((m) => m.groupId));
+		const groupChats = allChats.filter(
+			(chat) =>
+				chat.type === "group" && chat.groupId && userGroupIds.has(chat.groupId),
+		);
+
+		const allUserChats = [
+			...directChats,
+			...communityChats,
+			...groupChats,
+		].sort((a, b) => {
 			const aTime = a.lastMessageAt || a.createdAt;
 			const bTime = b.lastMessageAt || b.createdAt;
 			return bTime - aTime;
@@ -86,16 +97,55 @@ export const getChatWithDetails = query({
 
 		if (chat.type === "community" && chat.communityId) {
 			const community = await ctx.db.get(chat.communityId);
+			let communityImageUrl = community?.imageUrl;
+			if (community?.imageId) {
+				communityImageUrl =
+					(await ctx.storage.getUrl(community.imageId)) ?? undefined;
+			}
 			return {
 				...chat,
 				community: community
 					? {
 							id: community._id,
 							name: community.name,
-							imageUrl: community.imageUrl,
+							imageUrl: communityImageUrl,
 							memberCount: community.memberCount,
 						}
 					: null,
+			};
+		}
+
+		if (chat.type === "group" && chat.groupId) {
+			const groupId = chat.groupId;
+			const group = await ctx.db.get(groupId);
+			const community = group ? await ctx.db.get(group.communityId) : null;
+			let communityImageUrl = community?.imageUrl;
+			if (community?.imageId) {
+				communityImageUrl =
+					(await ctx.storage.getUrl(community.imageId)) ?? undefined;
+			}
+			const groupMembers = await ctx.db
+				.query("communityGroupMembers")
+				.withIndex("by_group", (q) => q.eq("groupId", groupId))
+				.collect();
+
+			return {
+				...chat,
+				name: community?.name
+					? `${community.name} / ${group?.name ?? chat.name ?? "Group Chat"}`
+					: (group?.name ?? chat.name ?? "Group Chat"),
+				description: group?.description ?? chat.description,
+				communityId: group?.communityId,
+				community: community
+					? {
+							id: community._id,
+							name: community.name,
+							imageUrl: communityImageUrl,
+							memberCount: community.memberCount,
+						}
+					: null,
+				memberCount: groupMembers.length,
+				isAdmin: group?.creatorId === args.currentUserId,
 			};
 		}
 
@@ -180,7 +230,6 @@ export const getChatWithDetails = query({
 export const getUserChatsWithDetails = query({
 	args: { userId: v.string() },
 	handler: async (ctx, args) => {
-		// Get direct chats where user is a participant
 		const allChats = await ctx.db.query("chats").order("desc").collect();
 
 		const directChats = allChats.filter(
@@ -188,7 +237,6 @@ export const getUserChatsWithDetails = query({
 				chat.type === "direct" && chat.participantIds?.includes(args.userId),
 		);
 
-		// Get community chats for communities user has joined
 		const userMemberships = await ctx.db
 			.query("communityMembers")
 			.withIndex("by_user", (q) => q.eq("userId", args.userId))
@@ -202,20 +250,28 @@ export const getUserChatsWithDetails = query({
 				communityIds.includes(chat.communityId),
 		);
 
-		// Get event/activity group chats user is a member of (from chatMembers table)
 		const userChatMemberships = await ctx.db
 			.query("chatMembers")
 			.withIndex("by_user", (q) => q.eq("userId", args.userId))
 			.collect();
-
 		const userChatIds = userChatMemberships.map((m) => m.chatId);
-		const groupChats = allChats.filter(
+
+		const userGroupMemberships = await ctx.db
+			.query("communityGroupMembers")
+			.withIndex("by_user", (q) => q.eq("userId", args.userId))
+			.collect();
+		const userGroupIds = new Set(userGroupMemberships.map((m) => m.groupId));
+		const communityGroupChats = allChats.filter(
+			(chat) =>
+				chat.type === "group" && chat.groupId && userGroupIds.has(chat.groupId),
+		);
+
+		const eventAndActivityChats = allChats.filter(
 			(chat) =>
 				(chat.type === "event" || chat.type === "activity") &&
 				userChatIds.includes(chat._id),
 		);
 
-		// Get all accepted requests involving this user to find connection sources
 		const requestsAsSender = await ctx.db
 			.query("requests")
 			.withIndex("by_sender", (q) => q.eq("senderId", args.userId))
@@ -229,12 +285,11 @@ export const getUserChatsWithDetails = query({
 			.collect();
 
 		const allAcceptedRequests = [...requestsAsSender, ...requestsAsReceiver];
-
-		// Create a map of chatId -> connection source info
 		const chatSourceMap: Record<
 			string,
 			{ activity: string; eventId?: string; activitySearchId?: string }
 		> = {};
+
 		for (const req of allAcceptedRequests) {
 			if (req.chatId) {
 				chatSourceMap[req.chatId] = {
@@ -245,14 +300,11 @@ export const getUserChatsWithDetails = query({
 			}
 		}
 
-		// Enrich direct chats with other user info and connection source
 		const enrichedDirectChats = await Promise.all(
 			directChats.map(async (chat) => {
 				const otherUserId = chat.participantIds?.find(
 					(id) => id !== args.userId,
 				);
-
-				// Get connection source info
 				const connectionSource = chatSourceMap[chat._id.toString()] || null;
 
 				if (otherUserId) {
@@ -261,7 +313,6 @@ export const getUserChatsWithDetails = query({
 						.withIndex("by_workos_id", (q) => q.eq("workosId", otherUserId))
 						.first();
 
-					// Get profile image URL (from storage if available)
 					let displayImage = otherUser?.profileImageUrl;
 					if (otherUser?.profileImageId) {
 						displayImage =
@@ -276,6 +327,7 @@ export const getUserChatsWithDetails = query({
 						connectionSource,
 					};
 				}
+
 				return {
 					...chat,
 					displayName: "Unknown",
@@ -285,17 +337,21 @@ export const getUserChatsWithDetails = query({
 			}),
 		);
 
-		// Enrich community chats with community info
 		const enrichedCommunityChats = await Promise.all(
 			communityChats.map(async (chat) => {
 				if (chat.communityId) {
 					const community = await ctx.db.get(chat.communityId);
+					let displayImage = community?.imageUrl;
+					if (community?.imageId) {
+						displayImage =
+							(await ctx.storage.getUrl(community.imageId)) ?? undefined;
+					}
 					return {
 						...chat,
 						displayName: community?.name || "Community",
-						displayImage: community?.imageUrl,
+						displayImage,
 						memberCount: community?.memberCount,
-						connectionSource: null, // Communities don't have connection source
+						connectionSource: null,
 					};
 				}
 				return {
@@ -307,24 +363,62 @@ export const getUserChatsWithDetails = query({
 			}),
 		);
 
-		// Enrich event/activity group chats with details
-		const enrichedGroupChats = await Promise.all(
-			groupChats.map(async (chat) => {
-				// Get member count for this chat
+		const enrichedCommunityGroupChats = await Promise.all(
+			communityGroupChats.map(async (chat) => {
+				if (chat.groupId) {
+					const groupId = chat.groupId;
+					const group = await ctx.db.get(chat.groupId);
+					const community = group ? await ctx.db.get(group.communityId) : null;
+					let displayImage = community?.imageUrl;
+					if (community?.imageId) {
+						displayImage =
+							(await ctx.storage.getUrl(community.imageId)) ?? undefined;
+					}
+					const groupMembers = await ctx.db
+						.query("communityGroupMembers")
+						.withIndex("by_group", (q) => q.eq("groupId", groupId))
+						.collect();
+
+					return {
+						...chat,
+						displayName: community?.name
+							? `${community.name} / ${group?.name || chat.name || "Group Chat"}`
+							: group?.name || chat.name || "Group Chat",
+						displayImage,
+						memberCount: groupMembers.length,
+						isAdmin: group?.creatorId === args.userId,
+						eventDetails: null,
+						activityType: null,
+						connectionSource: null,
+					};
+				}
+
+				return {
+					...chat,
+					displayName: chat.name || "Group Chat",
+					displayImage: null,
+					memberCount: 0,
+					isAdmin: false,
+					eventDetails: null,
+					activityType: null,
+					connectionSource: null,
+				};
+			}),
+		);
+
+		const enrichedEventAndActivityChats = await Promise.all(
+			eventAndActivityChats.map(async (chat) => {
 				const chatMembersList = await ctx.db
 					.query("chatMembers")
 					.withIndex("by_chat", (q) => q.eq("chatId", chat._id))
 					.collect();
 				const memberCount = chatMembersList.length;
-
-				// Check if current user is admin
 				const userMembership = userChatMemberships.find(
 					(m) => m.chatId === chat._id,
 				);
 				const isAdmin =
 					userMembership?.role === "admin" || chat.adminId === args.userId;
 
-				// For event chats, get event details
 				if (chat.type === "event" && chat.eventId) {
 					const event = await ctx.db.get(chat.eventId);
 					let eventImageUrl: string | undefined;
@@ -345,12 +439,11 @@ export const getUserChatsWithDetails = query({
 									dateTime: event.dateTime,
 								}
 							: null,
-						activityType: null, // For filtering
+						activityType: null,
 						connectionSource: null,
 					};
 				}
 
-				// For activity chats, get activity search details
 				if (chat.type === "activity" && chat.activitySearchId) {
 					const activitySearch = await ctx.db.get(chat.activitySearchId);
 					return {
@@ -358,11 +451,11 @@ export const getUserChatsWithDetails = query({
 						displayName:
 							chat.name ||
 							`${activitySearch?.activityType || "Activity"} Group`,
-						displayImage: null, // Activity searches don't have images
+						displayImage: null,
 						memberCount,
 						isAdmin,
 						eventDetails: null,
-						activityType: activitySearch?.activityType || null, // For filtering
+						activityType: activitySearch?.activityType || null,
 						connectionSource: null,
 					};
 				}
@@ -380,11 +473,11 @@ export const getUserChatsWithDetails = query({
 			}),
 		);
 
-		// Combine and sort by last message
 		const allUserChats = [
 			...enrichedDirectChats,
 			...enrichedCommunityChats,
-			...enrichedGroupChats,
+			...enrichedCommunityGroupChats,
+			...enrichedEventAndActivityChats,
 		].sort((a, b) => {
 			const aTime = a.lastMessageAt || a.createdAt;
 			const bTime = b.lastMessageAt || b.createdAt;

@@ -25,6 +25,18 @@ export default defineSchema({
 		connectionPriorities: v.optional(v.array(v.string())),
 		termsAcceptedAt: v.optional(v.number()),
 		hasCompletedPreferences: v.optional(v.boolean()),
+		// Email notification preferences (all default to true when unset)
+		notificationPrefs: v.optional(
+			v.object({
+				connectionRequest: v.optional(v.boolean()),
+				connectionAccepted: v.optional(v.boolean()),
+				newMessage: v.optional(v.boolean()),
+				pendingReminder: v.optional(v.boolean()),
+				welcome: v.optional(v.boolean()),
+			}),
+		),
+		// Set once the welcome email has been queued (idempotency)
+		welcomeEmailSentAt: v.optional(v.number()),
 	})
 		.index("by_workos_id", ["workosId"])
 		.index("by_email", ["email"]),
@@ -175,4 +187,24 @@ export default defineSchema({
 		.index("by_chat", ["chatId"])
 		.index("by_user", ["userId"])
 		.index("by_chat_and_user", ["chatId", "userId"]),
+
+	// Email notification outbox / tracking (app-level idempotency + observability).
+	// The Resend component keeps its own emails/deliveryEvents tables; this table
+	// tracks our business-level intent so retries never double-send.
+	notificationEvents: defineTable({
+		type: v.string(), // "connection_request" | "connection_accepted" | "new_message" | "welcome" | "pending_reminder"
+		dedupeKey: v.string(), // stable idempotency key, e.g. "connection-request:<requestId>"
+		recipientUserId: v.string(), // workosId of intended recipient
+		relatedId: v.optional(v.string()), // requestId / chatId / messageId / userId
+		status: v.string(), // "queued" | "sent" | "failed" | "skipped"
+		attempts: v.number(),
+		error: v.optional(v.string()), // sanitized failure summary, never secrets/bodies
+		emailId: v.optional(v.string()), // Resend component EmailId when queued
+		createdAt: v.number(),
+		processedAt: v.optional(v.number()),
+	})
+		.index("by_dedupe", ["dedupeKey"])
+		.index("by_recipient", ["recipientUserId"])
+		.index("by_type", ["type"])
+		.index("by_status", ["status"]),
 });

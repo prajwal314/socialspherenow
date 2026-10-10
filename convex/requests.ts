@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 import { usersAreCompatible } from "./matching";
@@ -115,6 +116,14 @@ export const createRequest = mutation({
 			createdAt: Date.now(),
 		});
 
+		// Notify the receiver out-of-band. The request is already persisted;
+		// the scheduled worker re-validates everything and never blocks this.
+		await ctx.scheduler.runAfter(
+			0,
+			internal.emails.scheduleConnectionRequestEmail,
+			{ requestId },
+		);
+
 		return { success: true, requestId };
 	},
 });
@@ -185,6 +194,13 @@ export const acceptRequest = mutation({
 			status: "accepted",
 			chatId: chatId,
 		});
+
+		// Notify the original requester out-of-band (acceptance persisted first).
+		await ctx.scheduler.runAfter(
+			0,
+			internal.emails.scheduleConnectionAcceptedEmail,
+			{ requestId: args.requestId },
+		);
 
 		// If this request is linked to an activity search, increment peopleJoined and add to group chat
 		if (request.activitySearchId) {

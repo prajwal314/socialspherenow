@@ -228,6 +228,15 @@ textarea,
 	touch-action: manipulation;
 }
 
+.modal-scrollbar-hidden {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.modal-scrollbar-hidden::-webkit-scrollbar {
+	display: none;
+}
+
 html {
 	overflow-x: hidden;
 }

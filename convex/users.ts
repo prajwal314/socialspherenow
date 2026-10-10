@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 
 // Helper function to normalize email
@@ -93,8 +94,8 @@ export const upsertUser = mutation({
 			// Update existing user
 			await ctx.db.patch(existingUserByWorkosId._id, {
 				email: normalizedEmail,
-				firstName: args.firstName,
-				lastName: args.lastName,
+				firstName: existingUserByWorkosId.firstName ?? args.firstName,
+				lastName: existingUserByWorkosId.lastName ?? args.lastName,
 				// Only update profileImageUrl if it's provided and user doesn't have a custom upload
 				...(args.profileImageUrl && !existingUserByWorkosId.profileImageId
 					? { profileImageUrl: args.profileImageUrl }
@@ -118,8 +119,8 @@ export const upsertUser = mutation({
 			);
 			await ctx.db.patch(existingUserByEmail._id, {
 				workosId: args.workosId,
-				firstName: args.firstName,
-				lastName: args.lastName,
+				firstName: existingUserByEmail.firstName ?? args.firstName,
+				lastName: existingUserByEmail.lastName ?? args.lastName,
 				...(args.profileImageUrl && !existingUserByEmail.profileImageId
 					? { profileImageUrl: args.profileImageUrl }
 					: {}),
@@ -138,6 +139,13 @@ export const upsertUser = mutation({
 		});
 
 		console.log(`[users.upsertUser] Created new user: ${args.workosId} with id: ${newUserId}`);
+
+		// Queue the one-time welcome email. The worker checks
+		// welcomeEmailSentAt + prefs, so retries/replays never double-send.
+		await ctx.scheduler.runAfter(0, internal.emails.scheduleWelcomeEmail, {
+			workosId: args.workosId,
+		});
+
 		return newUserId;
 	},
 });
@@ -305,6 +313,62 @@ export const updatePreferences = mutation({
 		await ctx.db.patch(existingUser._id, updates);
 
 		return { success: true };
+	},
+});
+
+// Email notification preferences (per-user, server-enforced)
+export const getNotificationPrefs = query({
+	args: { workosId: v.string() },
+	handler: async (ctx, args) => {
+		const user = await ctx.db
+			.query("users")
+			.withIndex("by_workos_id", (q) => q.eq("workosId", args.workosId))
+			.first();
+		if (!user) return null;
+		return {
+			connectionRequest: user.notificationPrefs?.connectionRequest ?? true,
+			connectionAccepted: user.notificationPrefs?.connectionAccepted ?? true,
+			newMessage: user.notificationPrefs?.newMessage ?? true,
+			pendingReminder: user.notificationPrefs?.pendingReminder ?? true,
+			welcome: user.notificationPrefs?.welcome ?? true,
+		};
+	},
+});
+
+// Only the owner can change their own prefs: callers must pass their own
+// WorkOS id (matches the existing client-auth pattern used across this app).
+export const updateNotificationPrefs = mutation({
+	args: {
+		workosId: v.string(),
+		connectionRequest: v.optional(v.boolean()),
+		connectionAccepted: v.optional(v.boolean()),
+		newMessage: v.optional(v.boolean()),
+		pendingReminder: v.optional(v.boolean()),
+		welcome: v.optional(v.boolean()),
+	},
+	handler: async (ctx, args) => {
+		const user = await ctx.db
+			.query("users")
+			.withIndex("by_workos_id", (q) => q.eq("workosId", args.workosId))
+			.first();
+		if (!user) throw new Error("User not found");
+		const next = {
+			connectionRequest:
+				args.connectionRequest ??
+				user.notificationPrefs?.connectionRequest ??
+				true,
+			connectionAccepted:
+				args.connectionAccepted ??
+				user.notificationPrefs?.connectionAccepted ??
+				true,
+			newMessage:
+				args.newMessage ?? user.notificationPrefs?.newMessage ?? true,
+			pendingReminder:
+				args.pendingReminder ?? user.notificationPrefs?.pendingReminder ?? true,
+			welcome: args.welcome ?? user.notificationPrefs?.welcome ?? true,
+		};
+		await ctx.db.patch(user._id, { notificationPrefs: next });
+		return { success: true, prefs: next };
 	},
 });
 

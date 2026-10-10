@@ -577,12 +577,19 @@ export const createGroup = mutation({
 		});
 
 		// Create group chat
-		await ctx.db.insert("chats", {
+		const chatId = await ctx.db.insert("chats", {
 			type: "group",
 			communityId: args.communityId,
 			groupId,
 			name: args.name,
 			createdAt: Date.now(),
+		});
+
+		await ctx.db.insert("chatMembers", {
+			chatId,
+			userId: args.userId,
+			role: "admin",
+			joinedAt: Date.now(),
 		});
 
 		return groupId;
@@ -661,6 +668,20 @@ export const joinGroup = mutation({
 			joinedAt: Date.now(),
 		});
 
+		const groupChat = await ctx.db
+			.query("chats")
+			.withIndex("by_group", (q) => q.eq("groupId", args.groupId))
+			.first();
+
+		if (groupChat) {
+			await ctx.db.insert("chatMembers", {
+				chatId: groupChat._id,
+				userId: args.userId,
+				role: "member",
+				joinedAt: Date.now(),
+			});
+		}
+
 		// Increment member count
 		await ctx.db.patch(args.groupId, {
 			memberCount: group.memberCount + 1,
@@ -689,6 +710,24 @@ export const leaveGroup = mutation({
 
 		// Remove membership
 		await ctx.db.delete(membership._id);
+
+		const groupChat = await ctx.db
+			.query("chats")
+			.withIndex("by_group", (q) => q.eq("groupId", args.groupId))
+			.first();
+
+		if (groupChat) {
+			const chatMembership = await ctx.db
+				.query("chatMembers")
+				.withIndex("by_chat_and_user", (q) =>
+					q.eq("chatId", groupChat._id).eq("userId", args.userId),
+				)
+				.first();
+
+			if (chatMembership) {
+				await ctx.db.delete(chatMembership._id);
+			}
+		}
 
 		// Decrement member count
 		const group = await ctx.db.get(args.groupId);
@@ -743,6 +782,15 @@ export const deleteGroup = mutation({
 			.first();
 
 		if (chat) {
+			const chatMembers = await ctx.db
+				.query("chatMembers")
+				.withIndex("by_chat", (q) => q.eq("chatId", chat._id))
+				.collect();
+
+			for (const member of chatMembers) {
+				await ctx.db.delete(member._id);
+			}
+
 			// Delete all messages in the chat
 			const messages = await ctx.db
 				.query("messages")

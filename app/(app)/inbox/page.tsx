@@ -361,7 +361,9 @@ export default function Inbox() {
 		}
 
 		if (activeFilter === "communities") {
-			return chats.filter((chat) => chat.type === "community");
+			return chats.filter(
+				(chat) => chat.type === "community" || chat.type === "group",
+			);
 		}
 
 		if (activeFilter === "events") {
@@ -397,7 +399,7 @@ export default function Inbox() {
 		const availableIds = new Set<string>(["all"]);
 
 		chats.forEach((chat) => {
-			if (chat.type === "community") {
+			if (chat.type === "community" || chat.type === "group") {
 				availableIds.add("communities");
 			} else if (chat.type === "event") {
 				// Event group chat
@@ -431,9 +433,7 @@ export default function Inbox() {
 				<div className="absolute -top-20 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 				<div className="relative">
 					<h1 className="text-3xl sm:text-4xl font-bold mb-2">
-						<span className="text-[#0c8b96]">
-							Inbox
-						</span>
+						<span className="text-[#0c8b96]">Inbox</span>
 					</h1>
 					<p className="text-gray-400">Your conversations</p>
 				</div>
@@ -510,6 +510,18 @@ export default function Inbox() {
 											"🎉"
 										)}
 									</div>
+								) : chat.type === "group" ? (
+									<div className="w-12 h-12 rounded-full flex items-center justify-center text-xl shrink-0 bg-gradient-to-br from-cyan-500 to-indigo-500">
+										{chat.displayImage ? (
+											<img
+												src={chat.displayImage}
+												alt=""
+												className="w-full h-full rounded-full object-cover"
+											/>
+										) : (
+											"👥"
+										)}
+									</div>
 								) : chat.type === "activity" ? (
 									// Activity group chat avatar
 									<div className="w-12 h-12 rounded-full flex items-center justify-center text-xl shrink-0 bg-gradient-to-br from-emerald-500 to-cyan-500">
@@ -574,6 +586,23 @@ export default function Inbox() {
 									<div className="flex flex-col items-end gap-1 shrink-0">
 										<span className="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 text-xs">
 											Event
+										</span>
+										{chat.isAdmin && (
+											<span className="px-1.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 text-[10px]">
+												Admin
+											</span>
+										)}
+										{chat.memberCount && (
+											<span className="text-[10px] text-gray-500">
+												{chat.memberCount} member
+												{chat.memberCount > 1 ? "s" : ""}
+											</span>
+										)}
+									</div>
+								) : chat.type === "group" ? (
+									<div className="flex flex-col items-end gap-1 shrink-0">
+										<span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-xs">
+											Group
 										</span>
 										{chat.isAdmin && (
 											<span className="px-1.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 text-[10px]">
@@ -725,7 +754,6 @@ export default function Inbox() {
 								)}
 							</button>
 						) : selectedChat.type === "event" ? (
-							// Event group chat avatar
 							<div className="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-gradient-to-br from-orange-500 to-pink-500">
 								{selectedChat.eventDetails?.imageUrl ? (
 									<img
@@ -735,6 +763,18 @@ export default function Inbox() {
 									/>
 								) : (
 									"🎉"
+								)}
+							</div>
+						) : selectedChat.type === "group" ? (
+							<div className="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-gradient-to-br from-cyan-500 to-indigo-500">
+								{selectedChat.community?.imageUrl ? (
+									<img
+										src={selectedChat.community.imageUrl}
+										alt=""
+										className="w-full h-full rounded-full object-cover"
+									/>
+								) : (
+									"👥"
 								)}
 							</div>
 						) : selectedChat.type === "activity" ? (
@@ -813,6 +853,22 @@ export default function Inbox() {
 											` - ${selectedChat.description}`}
 									</p>
 								</div>
+							) : selectedChat.type === "group" ? (
+								<div>
+									<h2 className="font-semibold text-white truncate flex items-center gap-2">
+										{selectedChat.name || "Group Chat"}
+										{selectedChat.isAdmin && (
+											<span className="px-1.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 text-[10px]">
+												Admin
+											</span>
+										)}
+									</h2>
+									<p className="text-xs text-gray-500">
+										{selectedChat.memberCount || 0} members
+										{selectedChat.description &&
+											` - ${selectedChat.description}`}
+									</p>
+								</div>
 							) : (
 								<h2 className="font-semibold text-white truncate">
 									{selectedChat.type === "community" ? (
@@ -837,6 +893,11 @@ export default function Inbox() {
 								<p className="text-xs text-gray-500">
 									{selectedChat.community?.memberCount || 0} members - Tap name
 									to view details
+								</p>
+							)}
+							{selectedChat.type === "group" && (
+								<p className="text-xs text-gray-500">
+									{selectedChat.memberCount || 0} members - Community group chat
 								</p>
 							)}
 							{selectedChat.type === "direct" && (
@@ -989,7 +1050,9 @@ export default function Inbox() {
 
 	return (
 		<div className="min-h-screen bg-transparent text-white">
-			<main className={`${selectedChatId ? "h-[calc(100vh-4rem)]" : "min-h-[calc(100vh-4rem)] pt-6 pb-24 px-4"}`}>
+			<main
+				className={`${selectedChatId ? "h-[calc(100vh-4rem)]" : "min-h-[calc(100vh-4rem)] pt-6 pb-24 px-4"}`}
+			>
 				{selectedChatId ? renderChatView() : renderChatList()}
 			</main>
 

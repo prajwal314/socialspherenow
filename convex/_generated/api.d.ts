@@ -11,8 +11,12 @@
 import type * as activitySearches from "../activitySearches.js";
 import type * as chats from "../chats.js";
 import type * as communities from "../communities.js";
+import type * as crons from "../crons.js";
+import type * as emailContent from "../emailContent.js";
+import type * as emails from "../emails.js";
 import type * as events from "../events.js";
 import type * as files from "../files.js";
+import type * as http from "../http.js";
 import type * as matching from "../matching.js";
 import type * as messages from "../messages.js";
 import type * as requests from "../requests.js";
@@ -28,8 +32,12 @@ declare const fullApi: ApiFromModules<{
   activitySearches: typeof activitySearches;
   chats: typeof chats;
   communities: typeof communities;
+  crons: typeof crons;
+  emailContent: typeof emailContent;
+  emails: typeof emails;
   events: typeof events;
   files: typeof files;
+  http: typeof http;
   matching: typeof matching;
   messages: typeof messages;
   requests: typeof requests;
@@ -62,4 +70,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  resend: import("@convex-dev/resend/_generated/component.js").ComponentApi<"resend">;
+};

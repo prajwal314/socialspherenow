@@ -54,14 +54,6 @@ interface ActiveSearch {
 	};
 }
 
-interface PendingRequest {
-	_id: Id<"requests">;
-	senderId: string;
-	senderName?: string;
-	intent?: string;
-	activity?: string;
-}
-
 interface SentRequest {
 	_id: Id<"requests">;
 	receiverId: string;
@@ -175,11 +167,6 @@ export default function Home() {
 		user?.id ? { excludeUserId: user.id } : "skip",
 	) as ActiveSearch[] | undefined | null;
 
-	const pendingRequests = useQuery(
-		api.requests.getPendingRequests,
-		user?.id ? { receiverId: user.id } : "skip",
-	) as PendingRequest[] | undefined | null;
-
 	// Get user's sent requests to know who they already connected with
 	const sentRequests = useQuery(
 		api.requests.getSentRequests,
@@ -198,8 +185,6 @@ export default function Home() {
 	) as Id<"communities">[] | undefined | null;
 
 	// Mutations
-	const acceptRequest = useMutation(api.requests.acceptRequest);
-	const declineRequest = useMutation(api.requests.declineRequest);
 	const createRequest = useMutation(api.requests.createRequest);
 	const createEvent = useMutation(api.events.createEvent);
 	const joinCommunity = useMutation(api.communities.joinCommunity);
@@ -239,22 +224,6 @@ export default function Home() {
 			hour: "numeric",
 			minute: "2-digit",
 		});
-	};
-
-	const handleAcceptRequest = async (requestId: Id<"requests">) => {
-		try {
-			await acceptRequest({ requestId });
-		} catch (error) {
-			console.error("Failed to accept request:", error);
-		}
-	};
-
-	const handleDeclineRequest = async (requestId: Id<"requests">) => {
-		try {
-			await declineRequest({ requestId });
-		} catch (error) {
-			console.error("Failed to decline request:", error);
-		}
 	};
 
 	const handleJoinCommunity = async (communityId: Id<"communities">) => {
@@ -447,62 +416,6 @@ export default function Home() {
 						</p>
 					</div>
 				</header>
-
-				{/* Pending Requests Section - Always at TOP */}
-				{pendingRequests && pendingRequests.length > 0 && (
-					<section className="mb-8">
-						<div className="flex items-center gap-2 mb-4">
-							<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-							<h2 className="text-lg font-semibold text-white">
-								Connection Requests
-							</h2>
-							<span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-medium">
-								{pendingRequests.length}
-							</span>
-						</div>
-						<div className="space-y-3">
-							{pendingRequests.map((request) => (
-								<div
-									key={request._id}
-									className="p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/20 backdrop-blur-sm"
-								>
-									<div className="flex items-start gap-4">
-										<div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-lg shrink-0">
-											{request.senderName?.charAt(0)?.toUpperCase() || "?"}
-										</div>
-										<div className="flex-1 min-w-0">
-											<p className="font-semibold text-white">
-												{request.senderName}
-											</p>
-											<p className="text-sm text-gray-400 mt-0.5">
-												wants to connect for{" "}
-												<span className="text-purple-300 capitalize">
-													{request.intent || request.activity}
-												</span>
-											</p>
-										</div>
-									</div>
-									<div className="flex gap-3 mt-4">
-										<button
-											type="button"
-											onClick={() => handleAcceptRequest(request._id)}
-											className="flex-1 px-4 py-2.5 rounded-xl bg-[#0c8b96] text-white border border-white/20 text-sm font-medium hover:shadow-lg hover:shadow-gray-400/25 transition-all duration-200"
-										>
-											Accept
-										</button>
-										<button
-											type="button"
-											onClick={() => handleDeclineRequest(request._id)}
-											className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 text-sm font-medium hover:bg-white/10 transition-all duration-200"
-										>
-											Decline
-										</button>
-									</div>
-								</div>
-							))}
-						</div>
-					</section>
-				)}
 
 				{/* Trending Events Section */}
 				<section className="mb-8 rounded-2xl border border-orange-400/20 bg-gradient-to-r from-orange-500/10 via-pink-500/10 to-purple-500/10 p-5 sm:p-6">
@@ -1620,7 +1533,7 @@ export default function Home() {
 			{viewingCommunityId && (
 				<CommunityDetailModal
 					communityId={viewingCommunityId}
-					userId={currentUser?._id || null}
+					userId={user?.id || null}
 					onClose={() => setViewingCommunityId(null)}
 				/>
 			)}

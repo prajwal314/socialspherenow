@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 
 // Get messages for a chat (with pagination support)
@@ -74,6 +75,17 @@ export const sendMessage = mutation({
 			lastMessagePreview: preview,
 			lastMessageAt: now,
 		});
+
+		// Digest email for recipients (not the sender). Scheduled with a grace
+		// delay; the worker only mails when unread mail still exists and the
+		// cooldown has passed. Message is already persisted — mail never blocks it.
+		if (messageType !== "system" && args.senderId !== "system") {
+			await ctx.scheduler.runAfter(0, internal.emails.scheduleMessageEmail, {
+				chatId: args.chatId,
+				senderWorkosId: args.senderId,
+				messageId,
+			});
+		}
 
 		return { success: true, messageId };
 	},

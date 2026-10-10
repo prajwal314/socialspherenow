@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import BottomNav from "@/components/BottomNav";
+import NotificationPreferences from "@/components/NotificationPreferences";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/lib/auth-context";
@@ -736,6 +737,9 @@ export default function Profile() {
 					</div>
 				</div>
 			)}
+
+			{/* Email notification settings */}
+			<NotificationPreferences workosId={user?.id} />
 
 			{/* Menu Items */}
 			<div className="space-y-2">

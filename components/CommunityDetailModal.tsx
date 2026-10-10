@@ -328,16 +328,16 @@ export default function CommunityDetailModal({
 			/>
 			<div className="fixed inset-0 z-[61] overflow-y-auto pointer-events-none">
 				<div className="min-h-full flex items-center justify-center p-4 py-8">
-					<div className="w-full max-w-lg rounded-3xl glass-strong glass-shine border border-white/10 shadow-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto">
+					<div className="w-full max-w-lg rounded-3xl glass-strong border border-white/10 shadow-2xl max-h-[calc(100vh-2rem)] overflow-hidden pointer-events-auto modal-scrollbar-hidden">
 						{/* Header with image */}
 						<div className="relative shrink-0">
 							{/* Cover Image */}
-							<div className="h-32 bg-gradient-to-br from-cyan-500/30 to-purple-500/30 relative">
+							<div className="h-52 bg-gradient-to-br from-cyan-500/30 to-purple-500/30 relative overflow-hidden">
 								{imagePreview && (
 									<img
 										src={imagePreview}
 										alt=""
-										className="w-full h-full object-cover"
+										className="w-full h-full object-cover object-center"
 									/>
 								)}
 								{isEditing && isAdmin && (
@@ -418,7 +418,7 @@ export default function CommunityDetailModal({
 						</div>
 
 						{/* Content */}
-						<div className="flex-1 overflow-y-auto">
+						<div className="max-h-[calc(100vh-2rem-14rem)] overflow-y-auto modal-scrollbar-hidden">
 							{communityDetails === undefined ? (
 								<div className="flex items-center justify-center py-20">
 									<div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
